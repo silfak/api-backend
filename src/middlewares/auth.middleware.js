@@ -17,7 +17,7 @@ export const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   } catch (e) {
     return res.status(401).json({ error: 'Token tidak valid atau sudah expired.' });
   }
@@ -26,9 +26,7 @@ export const verifyToken = (req, res, next) => {
 export const authorizeRole = (allowedRoles) => {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
-      return res
-        .status(403)
-        .json({ error: 'Forbidden' });
+      return res.status(403).json({ error: 'Forbidden' });
     }
     next();
   };

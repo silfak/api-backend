@@ -9,7 +9,7 @@ const router = Router();
 
 router.get('/health', getHealth);
 router.use('/users', userRoutes);
-router.use('/auth', authRouter)
+router.use('/auth', authRouter);
 
 router.get('/db-test', async (req, res) => {
   try {

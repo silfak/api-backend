@@ -1,4 +1,4 @@
-import { ZodError } from "zod";
+import { ZodError } from 'zod';
 
 export const validateBody = (schema) => {
   return async (req, res, next) => {

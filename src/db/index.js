@@ -1,11 +1,9 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import pg from 'pg';
-import { env } from '../config/env.js';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from '@neondatabase/serverless';
+import { relations } from './relations.js';
 
-const { Pool } = pg;
+if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
-const pool = new Pool({
-  connectionString: env.databaseUrl || undefined,
-});
+const client = neon(process.env.DATABASE_URL);
 
-export const db = drizzle(pool);
+export const db = drizzle({ relations, client });

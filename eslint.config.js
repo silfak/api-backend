@@ -13,7 +13,8 @@ export default [
     },
     rules: {
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-      'prettier/prettier': 'error',
+      "semi": ["error", "never"],
+      // 'prettier/prettier': 'error',
     },
   },
   eslintConfigPrettier,

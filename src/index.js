@@ -3,6 +3,8 @@ import express from 'express';
 import { env } from './config/env.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import apiRoutes from './routes/index.js';
+import { db } from './db/index.js';
+import { users } from './db/schema.js';
 
 const app = express();
 

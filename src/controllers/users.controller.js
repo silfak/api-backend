@@ -84,34 +84,24 @@ export const updateUser = async (req, res) => {
   }
 };
 
-export const deactivateUser = async (req, res) => {
+export const updateUserStatus = async (req, res) => {
   try {
     const user = await getUserByIdService(req.params.id);
-    const result = await deactivateUserService(user.id);
+    let result;
+    if (user.isActive) {
+      result = await deactivateUserService(user.id);
+    } else {
+      result = await activateUserService(user.id);
+    }
 
     return res.json({
-      message: 'User deactivated successfully',
+      message: 'User updated successfully',
       data: result,
     });
   } catch (error) {
     return res.status(400).json({
       message: error.message,
     });
+  
   }
-};
-
-export const activateUser = async (req, res) => {
-  try {
-    const user = await getUserByIdService(req.params.id);
-    const result = await activateUserService(user.id);
-
-    return res.json({
-      message: 'User activated successfully',
-      data: result,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      message: error.message,
-    });
-  }
-};
+}

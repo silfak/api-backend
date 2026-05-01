@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "db2e35f2-8b02-4c7c-a31a-de88efd800f8",
+  "id": "2a4b6214-5c99-4299-91b4-558bd2466372",
   "prevIds": [
-    "210284b6-a5d7-4b20-bb1b-fcb98c771509"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
@@ -110,6 +110,19 @@
       "table": "users"
     },
     {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "true",
+      "generated": null,
+      "identity": null,
+      "name": "is_active",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
       "type": "timestamp",
       "typeSchema": null,
       "notNull": true,
@@ -171,8 +184,5 @@
       "table": "users"
     }
   ],
-  "renames": [
-    "public.users.users_id_unique->public.users.users_pkey",
-    "public.users.users_role_id_roles_id_fk->public.users.users_role_id_roles_id_fkey"
-  ]
+  "renames": []
 }

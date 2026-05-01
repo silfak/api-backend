@@ -25,7 +25,7 @@ export const verifyToken = (req, res, next) => {
 
 export const authorizeRole = (allowedRoles) => {
   return (req, res, next) => {
-    if (!req.user || !allowedRoles.includes(req.user.role)) {
+    if (!req.user || !allowedRoles.includes(req.user.role.name)) {
       return res.status(403).json({ error: 'Forbidden' });
     }
     next();

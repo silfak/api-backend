@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import { getHealth } from '../controllers/healthController.js';
-import userRoutes from './userRoutes.js';
 import { db } from '../db/index.js';
 import { users } from '../db/schema.js';
 import authRouter from './auth.router.js';
+import usersRouter from './users.router.js';
 
 const router = Router();
 
 router.get('/health', getHealth);
-router.use('/users', userRoutes);
 router.use('/auth', authRouter);
+router.use('/users', usersRouter);
 
 router.get('/db-test', async (req, res) => {
   try {

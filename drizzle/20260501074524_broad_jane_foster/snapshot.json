@@ -1,10 +1,10 @@
 {
-  "dialect": "postgres",
-  "id": "210284b6-a5d7-4b20-bb1b-fcb98c771509",
-  "prevIds": [
-    "00000000-0000-0000-0000-000000000000"
-  ],
   "version": "8",
+  "dialect": "postgres",
+  "id": "4c48f645-2fc6-4a74-818a-74370de87f09",
+  "prevIds": [
+    "2a4b6214-5c99-4299-91b4-558bd2466372"
+  ],
   "ddl": [
     {
       "isRlsEnabled": false,
@@ -32,19 +32,6 @@
       "table": "roles"
     },
     {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "users"
-    },
-    {
       "type": "varchar(255)",
       "typeSchema": null,
       "notNull": true,
@@ -56,6 +43,19 @@
       "entityType": "columns",
       "schema": "public",
       "table": "roles"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
     },
     {
       "type": "varchar(255)",
@@ -97,6 +97,19 @@
       "table": "users"
     },
     {
+      "type": "varchar(255)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "nim",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
       "type": "uuid",
       "typeSchema": null,
       "notNull": false,
@@ -105,6 +118,19 @@
       "generated": null,
       "identity": null,
       "name": "role_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "true",
+      "generated": null,
+      "identity": null,
+      "name": "is_active",
       "entityType": "columns",
       "schema": "public",
       "table": "users"
@@ -123,7 +149,7 @@
       "table": "users"
     },
     {
-      "nameExplicit": true,
+      "nameExplicit": false,
       "columns": [
         "role_id"
       ],
@@ -134,7 +160,7 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
-      "name": "users_role_id_roles_id_fk",
+      "name": "users_role_id_roles_id_fkey",
       "entityType": "fks",
       "schema": "public",
       "table": "users"
@@ -143,21 +169,21 @@
       "columns": [
         "id"
       ],
-      "nameExplicit": true,
+      "nameExplicit": false,
       "name": "roles_pkey",
-      "entityType": "pks",
       "schema": "public",
-      "table": "roles"
+      "table": "roles",
+      "entityType": "pks"
     },
     {
       "columns": [
         "id"
       ],
-      "nameExplicit": true,
-      "name": "users_id_unique",
-      "entityType": "pks",
+      "nameExplicit": false,
+      "name": "users_pkey",
       "schema": "public",
-      "table": "users"
+      "table": "users",
+      "entityType": "pks"
     },
     {
       "nameExplicit": true,
@@ -169,6 +195,17 @@
       "entityType": "uniques",
       "schema": "public",
       "table": "users"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "nim"
+      ],
+      "nullsNotDistinct": false,
+      "name": "users_nim_key",
+      "schema": "public",
+      "table": "users",
+      "entityType": "uniques"
     }
   ],
   "renames": []

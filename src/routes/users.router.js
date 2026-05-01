@@ -11,7 +11,7 @@ usersRouter.use(verifyToken);
 usersRouter.use(authorizeRole([ROLES.ADMIN]))
 
 usersRouter.get('/', usersController.getUsers)
-usersRouter.post('/', validateBody(usersSchema), usersController.createUser)
+usersRouter.post('/OB', validateBody(usersSchema), usersController.createOB)
 usersRouter.get('/:id', usersController.getUserById)
 usersRouter.put('/:id', validateBody(usersSchema), usersController.updateUser)
 usersRouter.delete('/:id', usersController.deactivateUser)

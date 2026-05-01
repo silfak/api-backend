@@ -1,9 +1,11 @@
+import { getRoleByName } from '../services/roles.service.js';
 import {
   activateUserService,
   createUserService,
   deactivateUserService,
   getALLUsersService,
   getUserByIdService,
+  updateUserService,
 } from '../services/users.service.js';
 
 export const getUsers = async (req, res) => {
@@ -36,9 +38,18 @@ export const getUserById = async (req, res) => {
   }
 };
 
-export const createUser = async (req, res) => {
+export const createOB = async (req, res) => {
   try {
-    const result = await createUserService(req.body);
+    const role = await getRoleByName('OB');
+
+    if (!role || !role.id) {
+      return res.status(404).json({
+        message: 'Role "OB" tidak ditemukan di database.',
+      });
+    }
+
+    const result = await createUserService({...req.body, roleId: role.id});
+    
     return res.json({
       message: 'User created successfully',
       data: result,

@@ -2,6 +2,7 @@ import { db } from '../db/index.js';
 import { users } from '../db/schema.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import { getRoleByName } from './roles.service.js';
 
 export const registerService = async (data) => {
   // cek existing user
@@ -22,11 +23,7 @@ export const registerService = async (data) => {
 
   const hashedPassword = await bcrypt.hash(data.password, 10);
 
-  const mahasiswaRole = await db.query.roles.findFirst({
-    where: {
-      name: 'MAHASISWA',
-    },
-  });
+  const mahasiswaRole = await getRoleByName('MAHASISWA');
 
   const newUser = await db
     .insert(users)
@@ -51,7 +48,9 @@ export const loginService = async (data) => {
     with: {
       role: true,
     },
-    where: (users, { eq }) => eq(users.email, data.email),
+    where: {
+      email: data.email,
+    },
   });
 
   if (!user) {

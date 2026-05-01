@@ -1,5 +1,7 @@
 import { db } from '../db/index.js';
 import { users } from '../db/schema.js';
+import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
 
 export const getALLUsersService = async () => {
   const users = await db.query.users.findMany({
@@ -31,7 +33,9 @@ export const getUserByIdService = async (id) => {
         },
       },
     },
-    where: (users, { eq }) => eq(users.id, id),
+    where: {
+      id: id,
+    },
     columns: {
       id: true,
       name: true,
@@ -48,22 +52,45 @@ export const getUserByIdService = async (id) => {
 };
 
 export const createUserService = async (data) => {
-  const user = await db.insert(users).values(data).returning();
+  const password = await bcrypt.hash(data.password, 10);
+
+  const existingUser = await db.query.users.findFirst({
+    where: {
+      email: data.email,
+    },
+  });
+
+  if (existingUser) {
+    throw new Error('User already exists');
+  }
+
+  const user = await db
+    .insert(users)
+    .values({ ...data, password, isActive: true, nim: null })
+    .returning({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      isActive: users.id,
+    });
+
+  if (!user) {
+    throw new Error('User not created');
+  }
 
   return user;
 };
 
 export const updateUserService = async (id, data) => {
-  const user = await db.query.users.update({
-    where: (users, { eq }) => eq(users.id, id),
-    data: data,
-    columns: {
-      id: true,
-      name: true,
-      email: true,
-      isActive: true,
-    },
-  });
+  const user = await db
+    .update(users)
+    .set(data)
+    .where(eq(users.id, id)).returning({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      isActive: users.id,
+    });
 
   if (!user) {
     throw new Error('User not found');

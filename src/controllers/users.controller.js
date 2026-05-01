@@ -93,7 +93,7 @@ export const deactivateUser = async (req, res) => {
       message: 'User deactivated successfully',
       data: result,
     });
-  } catch {
+  } catch (error) {
     return res.status(400).json({
       message: error.message,
     });
@@ -106,10 +106,10 @@ export const activateUser = async (req, res) => {
     const result = await activateUserService(user.id);
 
     return res.json({
-      message: 'User deactivated successfully',
+      message: 'User activated successfully',
       data: result,
     });
-  } catch {
+  } catch (error) {
     return res.status(400).json({
       message: error.message,
     });

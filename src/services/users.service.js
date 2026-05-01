@@ -90,7 +90,7 @@ export const createUserService = async (data) => {
       id: users.id,
       name: users.name,
       email: users.email,
-      isActive: users.id,
+      isActive: users.isActive,
     });
 
   if (!user) {

@@ -14,7 +14,9 @@ export const users = pgTable(
     email: varchar('email', { length: 255 }).notNull(),
     password: varchar('password', { length: 255 }).notNull(),
     nim: varchar('nim', { length: 255 }).unique(),
-    roleId: uuid('role_id').references(() => roles.id).notNull(),
+    roleId: uuid('role_id')
+      .references(() => roles.id)
+      .notNull(),
     isActive: boolean('is_active').default(true).notNull(),
     createdAt: timestamp('created_at')
       .default(sql`now()`)

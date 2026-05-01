@@ -12,7 +12,7 @@ export const getALLUsersService = async () => {
         },
       },
     },
-    orderBy: (users, { desc }) => [ desc(users.isActive), desc(users.createdAt)],
+    orderBy: (users, { desc }) => [desc(users.isActive), desc(users.createdAt)],
     columns: {
       id: true,
       name: true,
@@ -35,13 +35,13 @@ export const getUserByRoleService = async (role) => {
     },
     where: {
       role: {
-        name: role
-      }
-    }
-  })
+        name: role,
+      },
+    },
+  });
 
   return users;
-}
+};
 
 export const getUserByIdService = async (id) => {
   const user = await db.query.users.findFirst({
@@ -101,15 +101,12 @@ export const createUserService = async (data) => {
 };
 
 export const updateUserService = async (id, data) => {
-  const user = await db
-    .update(users)
-    .set(data)
-    .where(eq(users.id, id)).returning({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-      isActive: users.id,
-    });
+  const user = await db.update(users).set(data).where(eq(users.id, id)).returning({
+    id: users.id,
+    name: users.name,
+    email: users.email,
+    isActive: users.id,
+  });
 
   if (!user) {
     throw new Error('User not found');
@@ -124,7 +121,8 @@ export const deactivateUserService = async (id) => {
     .set({
       isActive: false,
     })
-    .where(eq(users.id, id)).returning({
+    .where(eq(users.id, id))
+    .returning({
       id: users.id,
       name: users.name,
       email: users.email,
@@ -140,7 +138,8 @@ export const activateUserService = async (id) => {
     .set({
       isActive: true,
     })
-    .where(eq(users.id, id)).returning({
+    .where(eq(users.id, id))
+    .returning({
       id: users.id,
       name: users.name,
       email: users.email,

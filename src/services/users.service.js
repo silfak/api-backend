@@ -12,7 +12,7 @@ export const getALLUsersService = async () => {
         },
       },
     },
-    orderBy: (users, { desc }) => [desc(users.createdAt), desc(users.isActive)],
+    orderBy: (users, { desc }) => [ desc(users.isActive), desc(users.createdAt)],
     columns: {
       id: true,
       name: true,
@@ -23,6 +23,25 @@ export const getALLUsersService = async () => {
 
   return users;
 };
+
+export const getUserByRoleService = async (role) => {
+  const users = await db.query.users.findMany({
+    with: {
+      role: {
+        columns: {
+          name: true,
+        },
+      },
+    },
+    where: {
+      role: {
+        name: role
+      }
+    }
+  })
+
+  return users;
+}
 
 export const getUserByIdService = async (id) => {
   const user = await db.query.users.findFirst({
@@ -105,7 +124,12 @@ export const deactivateUserService = async (id) => {
     .set({
       isActive: false,
     })
-    .where(eq(users.id, id));
+    .where(eq(users.id, id)).returning({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      isActive: users.isActive,
+    });
 
   return updated;
 };
@@ -116,7 +140,12 @@ export const activateUserService = async (id) => {
     .set({
       isActive: true,
     })
-    .where(eq(users.id, id));
+    .where(eq(users.id, id)).returning({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      isActive: users.isActive,
+    });
 
   return updated;
 };

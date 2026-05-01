@@ -14,7 +14,7 @@ usersRouter.get('/', usersController.getUsers)
 usersRouter.post('/OB', validateBody(usersSchema), usersController.createOB)
 usersRouter.get('/:id', usersController.getUserById)
 usersRouter.put('/:id', validateBody(usersSchema), usersController.updateUser)
-usersRouter.delete('/:id', usersController.deactivateUser)
-usersRouter.patch('/:id', usersController.activateUser)
+usersRouter.patch('/:id/deactivate', usersController.deactivateUser)
+usersRouter.patch('/:id/activate', usersController.activateUser)
 
 export default usersRouter;

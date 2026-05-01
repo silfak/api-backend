@@ -5,12 +5,19 @@ import {
   deactivateUserService,
   getALLUsersService,
   getUserByIdService,
+  getUserByRoleService,
   updateUserService,
 } from '../services/users.service.js';
 
 export const getUsers = async (req, res) => {
   try {
-    const result = await getALLUsersService();
+    let result;
+
+    if (req.query.role) {
+      result = await getUserByRoleService(req.query.role);
+    } else {
+      result = await getALLUsersService();
+    }
 
     return res.json({
       message: 'Users fetched successfully',
@@ -48,8 +55,8 @@ export const createOB = async (req, res) => {
       });
     }
 
-    const result = await createUserService({...req.body, roleId: role.id});
-    
+    const result = await createUserService({ ...req.body, roleId: role.id });
+
     return res.json({
       message: 'User created successfully',
       data: result,

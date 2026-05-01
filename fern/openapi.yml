@@ -1,0 +1,1350 @@
+openapi: 3.0.0
+info:
+  title: SILFAK
+  version: 1.0.0
+  description: ''
+servers:
+  - url: ' http://localhost:8000/api'
+paths:
+  /auth/change-password:
+    put:
+      summary: change password
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+              example:
+                status: ''
+                message: ''
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                new_password:
+                  type: string
+                confirm_password:
+                  type: string
+            example:
+              old_password: password123
+              new_password: newPassword456
+              confirm_password: newPassword456
+  /auth/login:
+    post:
+      summary: login
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          email:
+                            type: string
+                          role:
+                            type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  token: ''
+                  user:
+                    id: ''
+                    name: ''
+                    email: ''
+                    role: ''
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+            example:
+              email: john.doe@example.com
+              password: password123
+  /auth/register:
+    post:
+      summary: register
+      responses:
+        '201':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      created_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: ''
+                  name: ''
+                  email: ''
+                  role: ''
+                  created_at: ''
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                role:
+                  type: string
+            example:
+              name: John Doe
+              email: john.doe@example.com
+              password: password123
+              role: user
+  /users:
+    get:
+      summary: get All users
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items: {}
+              example:
+                status: ''
+                message: ''
+                data: []
+      tags:
+        - users
+  '/users/{id}':
+    get:
+      summary: get user by id
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      is_active:
+                        nullable: true
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: ''
+                  name: ''
+                  email: ''
+                  role: ''
+                  is_active: null
+                  created_at: ''
+                  updated_at: ''
+      tags:
+        - users
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: a7f49e3e-8c18-4d55-9eb0-8c0dcd14cf8d
+    put:
+      summary: update users
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      is_active:
+                        nullable: true
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: ''
+                  name: ''
+                  email: ''
+                  role: ''
+                  is_active: null
+                  updated_at: ''
+      tags:
+        - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                role:
+                  type: string
+            example:
+              name: John Doe Updated
+              email: john.updated@example.com
+              role: user
+  /users/ob:
+    post:
+      summary: create OB
+      responses:
+        '201':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      phone:
+                        type: string
+                      role:
+                        type: string
+                      created_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: ''
+                  name: ''
+                  email: ''
+                  phone: ''
+                  role: ''
+                  created_at: ''
+      tags:
+        - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                phone:
+                  type: string
+                  format: utc-millisec
+            example:
+              name: OB Name
+              email: ob@example.com
+              password: password123
+              phone: 08123456789
+  '/users/{id}/deactivate':
+    patch:
+      summary: deactivate user
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      is_active:
+                        nullable: true
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: ''
+                  is_active: null
+      tags:
+        - users
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: a7f49e3e-8c18-4d55-9eb0-8c0dcd14cf8d
+  '/users/{id}/activate':
+    patch:
+      summary: activate user
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      is_active:
+                        nullable: true
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: ''
+                  is_active: null
+      tags:
+        - users
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: a7f49e3e-8c18-4d55-9eb0-8c0dcd14cf8d
+  /buildings:
+    get:
+      summary: Get all Buildings
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items: {}
+              example:
+                status: ''
+                message: ''
+                data: []
+      tags:
+        - buildings
+    post:
+      summary: Create new building
+      responses:
+        '201':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      name:
+                        type: string
+                      code:
+                        type: string
+                      description:
+                        type: string
+                      floors:
+                        nullable: true
+                      created_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  name: ''
+                  code: ''
+                  description: ''
+                  floors: null
+                  created_at: ''
+      tags:
+        - buildings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                code:
+                  type: string
+                description:
+                  type: string
+                floors:
+                  type: integer
+            example:
+              name: Gedung A
+              code: GDG-A
+              description: Gedung utama fakultas
+              floors: 5
+  '/buildings/{id}':
+    get:
+      summary: Get detailed building
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      name:
+                        type: string
+                      code:
+                        type: string
+                      description:
+                        type: string
+                      floors:
+                        nullable: true
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  name: ''
+                  code: ''
+                  description: ''
+                  floors: null
+                  created_at: ''
+                  updated_at: ''
+      tags:
+        - buildings
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+    put:
+      summary: Update building
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      name:
+                        type: string
+                      code:
+                        type: string
+                      description:
+                        type: string
+                      floors:
+                        nullable: true
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  name: ''
+                  code: ''
+                  description: ''
+                  floors: null
+                  updated_at: ''
+      tags:
+        - buildings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                code:
+                  type: string
+                description:
+                  type: string
+                floors:
+                  type: integer
+            example:
+              name: Gedung A Updated
+              code: GDG-A
+              description: Gedung utama fakultas (updated)
+              floors: 6
+    delete:
+      summary: Delete building
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+              example:
+                status: ''
+                message: ''
+      tags:
+        - buildings
+  /rooms:
+    get:
+      summary: Get all rooms
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items: {}
+              example:
+                status: ''
+                message: ''
+                data: []
+      tags:
+        - rooms
+    post:
+      summary: Create new room
+      responses:
+        '201':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      name:
+                        type: string
+                      code:
+                        type: string
+                      building_id:
+                        nullable: true
+                      category_id:
+                        nullable: true
+                      capacity:
+                        nullable: true
+                      floor:
+                        nullable: true
+                      created_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  name: ''
+                  code: ''
+                  building_id: null
+                  category_id: null
+                  capacity: null
+                  floor: null
+                  created_at: ''
+      tags:
+        - rooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                code:
+                  type: string
+                building_id:
+                  type: integer
+                category_id:
+                  type: integer
+                capacity:
+                  type: integer
+                floor:
+                  type: integer
+            example:
+              name: Ruang 101
+              code: R-101
+              building_id: 1
+              category_id: 1
+              capacity: 40
+              floor: 1
+  '/rooms/{id}':
+    get:
+      summary: Get detailed room
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      name:
+                        type: string
+                      code:
+                        type: string
+                      building_id:
+                        nullable: true
+                      category_id:
+                        nullable: true
+                      capacity:
+                        nullable: true
+                      floor:
+                        nullable: true
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  name: ''
+                  code: ''
+                  building_id: null
+                  category_id: null
+                  capacity: null
+                  floor: null
+                  created_at: ''
+                  updated_at: ''
+      tags:
+        - rooms
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+    put:
+      summary: Update room
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      name:
+                        type: string
+                      code:
+                        type: string
+                      building_id:
+                        nullable: true
+                      category_id:
+                        nullable: true
+                      capacity:
+                        nullable: true
+                      floor:
+                        nullable: true
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  name: ''
+                  code: ''
+                  building_id: null
+                  category_id: null
+                  capacity: null
+                  floor: null
+                  updated_at: ''
+      tags:
+        - rooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                code:
+                  type: string
+                building_id:
+                  type: integer
+                category_id:
+                  type: integer
+                capacity:
+                  type: integer
+                floor:
+                  type: integer
+            example:
+              name: Ruang 101 Updated
+              code: R-101
+              building_id: 1
+              category_id: 1
+              capacity: 50
+              floor: 1
+    delete:
+      summary: Delete room
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+              example:
+                status: ''
+                message: ''
+      tags:
+        - rooms
+  /categories:
+    get:
+      summary: Get all categories
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items: {}
+              example:
+                status: ''
+                message: ''
+                data: []
+      tags:
+        - categories
+    post:
+      summary: Create new categories
+      responses:
+        '201':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      created_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  name: ''
+                  description: ''
+                  created_at: ''
+      tags:
+        - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+            example:
+              name: Ruang Kelas
+              description: Kategori untuk ruangan kelas perkuliahan
+  '/categories/{id}':
+    get:
+      summary: Get categories by id
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  name: ''
+                  description: ''
+                  created_at: ''
+                  updated_at: ''
+      tags:
+        - categories
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+    put:
+      summary: Update categories
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  name: ''
+                  description: ''
+                  updated_at: ''
+      tags:
+        - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+            example:
+              name: Ruang Kelas Updated
+              description: Kategori untuk ruangan kelas perkuliahan (updated)
+    delete:
+      summary: Delete categories
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+              example:
+                status: ''
+                message: ''
+      tags:
+        - categories
+  /reports:
+    get:
+      summary: Get all reports
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items: {}
+              example:
+                status: ''
+                message: ''
+                data: []
+      tags:
+        - reports
+    post:
+      summary: Create new reports
+      responses:
+        '201':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      room_id:
+                        nullable: true
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      priority:
+                        type: string
+                      status:
+                        type: string
+                      reporter_id:
+                        type: string
+                      created_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  room_id: null
+                  title: ''
+                  description: ''
+                  priority: ''
+                  status: ''
+                  reporter_id: ''
+                  created_at: ''
+      tags:
+        - reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                room_id:
+                  type: integer
+                title:
+                  type: string
+                description:
+                  type: string
+                priority:
+                  type: string
+                reporter_id:
+                  type: string
+            example:
+              room_id: 1
+              title: Kerusakan AC
+              description: AC di ruang 101 tidak dingin
+              priority: high
+              reporter_id: a7f49e3e-8c18-4d55-9eb0-8c0dcd14cf8d
+  '/reports/rooms/{roomId}':
+    get:
+      summary: Get all reports by rooms
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items: {}
+              example:
+                status: ''
+                message: ''
+                data: []
+      tags:
+        - reports
+    parameters:
+      - name: roomId
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: ''
+  '/reports/{id}':
+    get:
+      summary: Get detailed reports
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      room_id:
+                        nullable: true
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      priority:
+                        type: string
+                      status:
+                        type: string
+                      reporter_id:
+                        type: string
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  room_id: null
+                  title: ''
+                  description: ''
+                  priority: ''
+                  status: ''
+                  reporter_id: ''
+                  created_at: ''
+                  updated_at: ''
+      tags:
+        - reports
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+    put:
+      summary: Update reports
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      priority:
+                        type: string
+                      status:
+                        type: string
+                      updated_at:
+                        type: string
+              example:
+                status: ''
+                message: ''
+                data:
+                  id: null
+                  title: ''
+                  description: ''
+                  priority: ''
+                  status: ''
+                  updated_at: ''
+      tags:
+        - reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                priority:
+                  type: string
+                status:
+                  type: string
+            example:
+              title: Kerusakan AC (Updated)
+              description: AC di ruang 101 sudah diperbaiki sebagian
+              priority: medium
+              status: in_progress
+    delete:
+      summary: Delete reports
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+              example:
+                status: ''
+                message: ''
+      tags:
+        - reports
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - BearerAuth: []

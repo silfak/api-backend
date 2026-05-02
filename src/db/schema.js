@@ -24,3 +24,28 @@ export const users = pgTable(
   },
   (table) => [unique('users_email_unique').on(table.email)],
 );
+
+export const buildings = pgTable("buildings", {
+  id: uuid().primaryKey(),
+  name: varchar({ length: 100 }).notNull(),
+});
+
+export const rooms = pgTable("rooms", {
+  id: uuid().primaryKey(),
+  name: varchar({ length: 100 }).notNull(),
+  buildingId: uuid("building_id").notNull().references(() => buildings.id),
+});
+
+export const categories = pgTable("categories", {
+  id: uuid().primaryKey(),
+  name: varchar({ length: 100 }).notNull(),
+});
+
+export const reports = pgTable("reports", {
+  id: uuid().primaryKey(),
+  userId: uuid("user_id").notNull().references(() => users.id),
+  roomId: uuid("room_id").notNull().references(() => rooms.id),
+  description: varchar({ length: 255 }),
+  imageUrl: varchar("image_url", { length: 255 }),
+  status: varchar({ length: 50 }),
+});

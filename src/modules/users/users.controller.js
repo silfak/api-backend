@@ -1,4 +1,5 @@
-import { getRoleByName } from '../services/roles.service.js';
+import { getRoleByName } from '../roles/roles.service.js';
+import { sendSuccess, sendError } from '../../shared/utils/response.js';
 import {
   activateUserService,
   createUserService,
@@ -7,7 +8,7 @@ import {
   getUserByIdService,
   getUserByRoleService,
   updateUserService,
-} from '../services/users.service.js';
+} from './users.service.js';
 
 export const getUsers = async (req, res) => {
   try {
@@ -19,14 +20,9 @@ export const getUsers = async (req, res) => {
       result = await getALLUsersService();
     }
 
-    return res.json({
-      message: 'Users fetched successfully',
-      data: result,
-    });
+    return sendSuccess(res, result, 'Users fetched successfully');
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
-    });
+    return sendError(res, error.message, 400);
   }
 };
 
@@ -34,14 +30,9 @@ export const getUserById = async (req, res) => {
   try {
     const result = await getUserByIdService(req.params.id);
 
-    return res.json({
-      message: 'User fetched successfully',
-      data: result,
-    });
+    return sendSuccess(res, result, 'User fetched successfully');
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
-    });
+    return sendError(res, error.message, 400);
   }
 };
 
@@ -50,21 +41,14 @@ export const createOB = async (req, res) => {
     const role = await getRoleByName('OB');
 
     if (!role || !role.id) {
-      return res.status(404).json({
-        message: 'Role "OB" tidak ditemukan di database.',
-      });
+      return sendError(res, 'Role "OB" tidak ditemukan di database.', 404);
     }
 
     const result = await createUserService({ ...req.body, roleId: role.id });
 
-    return res.json({
-      message: 'User created successfully',
-      data: result,
-    });
+    return sendSuccess(res, result, 'User created successfully');
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
-    });
+    return sendError(res, error.message, 400);
   }
 };
 
@@ -73,14 +57,9 @@ export const updateUser = async (req, res) => {
     const user = await getUserByIdService(req.params.id);
     const result = await updateUserService(user.id, req.body);
 
-    return res.json({
-      message: 'User updated successfully',
-      data: result,
-    });
+    return sendSuccess(res, result, 'User updated successfully');
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
-    });
+    return sendError(res, error.message, 400);
   }
 };
 
@@ -94,13 +73,8 @@ export const updateUserStatus = async (req, res) => {
       result = await activateUserService(user.id);
     }
 
-    return res.json({
-      message: 'User updated successfully',
-      data: result,
-    });
+    return sendSuccess(res, result, 'User updated successfully');
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
-    });
+    return sendError(res, error.message, 400);
   }
 };

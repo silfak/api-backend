@@ -1,4 +1,4 @@
-import { db } from '../db/index.js';
+import { db } from '../../shared/db/index.js';
 
 export const getRoleByName = async (name) => {
   console.log(name);

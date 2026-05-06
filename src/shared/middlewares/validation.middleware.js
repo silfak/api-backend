@@ -1,4 +1,5 @@
 import { ZodError } from 'zod';
+import { sendError } from '../utils/response.js';
 
 export const validateBody = (schema) => {
   return async (req, res, next) => {
@@ -14,10 +15,7 @@ export const validateBody = (schema) => {
           message: err.message,
         }));
 
-        return res.status(400).json({
-          error: 'Validation failed',
-          details: errorMessages,
-        });
+        return sendError(res, 'Validation failed', 400, errorMessages);
       }
       next(error);
     }

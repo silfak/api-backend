@@ -1,8 +1,8 @@
-import { db } from '../db/index.js';
-import { users } from '../db/schema.js';
+import { db } from '../../shared/db/index.js';
+import { users } from '../../shared/db/schema.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { getRoleByName } from './roles.service.js';
+import { getRoleByName } from '../roles/roles.service.js';
 
 export const registerService = async (data) => {
   // cek existing user
@@ -71,4 +71,34 @@ export const loginService = async (data) => {
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3d' });
 
   return token;
+};
+
+export const changePasswordService = async (userId, data) => {
+  const user = await db.query.users.findFirst({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) {
+    throw new Error('user not found');
+  }
+
+  if (data.oldPassword === data.newPassword) {
+    throw new Error('Password baru dan password lama tidak boleh sama');
+  }
+
+  const isPasswordValid = await bcrypt.compare(data.oldPassword, user.password);
+
+  if (!isPasswordValid) {
+    throw new Error('Password lama salah');
+  }
+
+  const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+
+  await db.update(users).set({
+    password: hashedPassword,
+  });
+
+  return;
 };

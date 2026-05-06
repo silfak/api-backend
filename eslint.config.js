@@ -14,18 +14,7 @@ export default [
     rules: {
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
 
-      'prettier/prettier': [
-        'warn',
-        {
-          semi: false,
-          singleQuote: true,
-          trailingComma: 'es5',
-          printWidth: 120,
-          endOfLine: 'auto',
-        },
-      ],
-
-      semi: 'off',
+      'prettier/prettier': "off",
     },
   },
 

@@ -5,18 +5,18 @@ export const relations = defineRelations(schema, (r) => ({
   rooms: {
     users: r.many.users({
       from: r.rooms.id.through(r.reports.roomId),
-      to: r.users.id.through(r.reports.userId)
+      to: r.users.id.through(r.reports.userId),
     }),
     building: r.one.buildings({
       from: r.rooms.buildingId,
-      to: r.buildings.id
+      to: r.buildings.id,
     }),
   },
   users: {
     rooms: r.many.rooms(),
     role: r.one.roles({
       from: r.users.roleId,
-      to: r.roles.id
+      to: r.roles.id,
     }),
   },
   buildings: {
@@ -25,4 +25,4 @@ export const relations = defineRelations(schema, (r) => ({
   roles: {
     users: r.many.users(),
   },
-}))
+}));

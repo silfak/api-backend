@@ -4,7 +4,7 @@ import { sql, InferSelectModel, InferInsertModel } from "drizzle-orm"
 
 
 export const buildings = pgTable("buildings", {
-	id: uuid().primaryKey(),
+	id: uuid().defaultRandom().primaryKey(),
 	name: varchar({ length: 100 }).notNull(),
 	createdAt: date("created_at").default(sql`now()`),
 });
@@ -12,7 +12,7 @@ export type Building = InferSelectModel<typeof buildings>;
 export type NewBuilding = InferInsertModel<typeof buildings>;
 
 export const categories = pgTable("categories", {
-	id: uuid().primaryKey(),
+	id: uuid().defaultRandom().primaryKey(),
 	name: varchar({ length: 100 }).notNull(),
 	createdAt: date("created_at").default(sql`now()`),
 });
@@ -20,7 +20,7 @@ export type Category = InferSelectModel<typeof categories>;
 export type NewCategory = InferInsertModel<typeof categories>;
 
 export const reports = pgTable("reports", {
-	id: uuid().primaryKey(),
+	id: uuid().defaultRandom().primaryKey(),
 	userId: uuid("user_id").notNull().references(() => users.id),
 	roomId: uuid("room_id").notNull().references(() => rooms.id),
 	description: varchar({ length: 255 }),
@@ -39,7 +39,7 @@ export type Role = InferSelectModel<typeof roles>;
 export type NewRole = InferInsertModel<typeof roles>;
 
 export const rooms = pgTable("rooms", {
-	id: uuid().primaryKey(),
+	id: uuid().defaultRandom().primaryKey(),
 	name: varchar({ length: 100 }).notNull(),
 	buildingId: uuid("building_id").notNull().references(() => buildings.id),
 	createdAt: date("created_at").default(sql`now()`),

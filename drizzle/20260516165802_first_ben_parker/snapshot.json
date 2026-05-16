@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "9ef52d06-846d-4d31-a471-0d03a3e0644d",
+  "id": "fb0e49d2-81ab-4c69-bdaf-bdef26156218",
   "prevIds": [
-    "4c48f645-2fc6-4a74-818a-74370de87f09"
+    "f31206bb-d86c-47a8-a5f5-0ca57e3431dc"
   ],
   "ddl": [
     {
@@ -47,7 +47,7 @@
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": null,
+      "default": "gen_random_uuid()",
       "generated": null,
       "identity": null,
       "name": "id",
@@ -86,7 +86,7 @@
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": null,
+      "default": "gen_random_uuid()",
       "generated": null,
       "identity": null,
       "name": "id",
@@ -125,7 +125,7 @@
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": null,
+      "default": "gen_random_uuid()",
       "generated": null,
       "identity": null,
       "name": "id",
@@ -242,7 +242,7 @@
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": null,
+      "default": "gen_random_uuid()",
       "generated": null,
       "identity": null,
       "name": "id",
@@ -557,5 +557,9 @@
       "table": "users"
     }
   ],
-  "renames": []
+  "renames": [
+    "public.reports.reports_room->public.reports.reports_user_id_users_id_fkey",
+    "public.reports.reports_user->public.reports.reports_room_id_rooms_id_fkey",
+    "public.rooms.buildings_rooms->public.rooms.rooms_building_id_buildings_id_fkey"
+  ]
 }

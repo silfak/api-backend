@@ -1,10 +1,10 @@
 import { db } from '../../shared/db/index.js';
-import { users } from '../../shared/db/schema.js';
+import { users, roles, NewUser, User } from '../../shared/db/schema.js';
 import bcrypt from 'bcryptjs';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 
 export const getALLUsersService = async () => {
-  const users = await db.query.users.findMany({
+  const allUsers = await db.query.users.findMany({
     with: {
       role: {
         columns: {
@@ -21,11 +21,11 @@ export const getALLUsersService = async () => {
     },
   });
 
-  return users;
+  return allUsers;
 };
 
-export const getUserByRoleService = async (role) => {
-  const users = await db.query.users.findMany({
+export const getUserByRoleService = async (roleName: string) => {
+  const usersWithRole = await db.query.users.findMany({
     with: {
       role: {
         columns: {
@@ -33,17 +33,24 @@ export const getUserByRoleService = async (role) => {
         },
       },
     },
+    orderBy: (users, { desc }) => [desc(users.isActive), desc(users.createdAt)],
     where: {
       role: {
-        name: role,
+        name: roleName,
       },
+    },
+    columns: {
+      id: true,
+      name: true,
+      email: true,
+      isActive: true,
     },
   });
 
-  return users;
+  return usersWithRole;
 };
 
-export const getUserByIdService = async (id) => {
+export const getUserByIdService = async (id: string) => {
   const user = await db.query.users.findFirst({
     with: {
       role: {
@@ -70,7 +77,9 @@ export const getUserByIdService = async (id) => {
   return user;
 };
 
-export const createUserService = async (data) => {
+type CreateUserData = Omit<NewUser, 'id' | 'createdAt' | 'isActive'> & { passwordConfirmation?: string };
+
+export const createUserService = async (data: CreateUserData) => {
   const password = await bcrypt.hash(data.password, 10);
 
   const existingUser = await db.query.users.findFirst({
@@ -83,9 +92,9 @@ export const createUserService = async (data) => {
     throw new Error('User already exists');
   }
 
-  const user = await db
+  const [user] = await db
     .insert(users)
-    .values({ ...data, password, isActive: true, nim: null })
+    .values({ name: data.name, email: data.email, roleId: data.roleId, password, isActive: true, nim: data.nim || null })
     .returning({
       id: users.id,
       name: users.name,
@@ -100,12 +109,12 @@ export const createUserService = async (data) => {
   return user;
 };
 
-export const updateUserService = async (id, data) => {
-  const user = await db.update(users).set(data).where(eq(users.id, id)).returning({
+export const updateUserService = async (id: string, data: Partial<NewUser>) => {
+  const [user] = await db.update(users).set(data).where(eq(users.id, id)).returning({
     id: users.id,
     name: users.name,
     email: users.email,
-    isActive: users.id,
+    isActive: users.isActive,
   });
 
   if (!user) {
@@ -115,8 +124,8 @@ export const updateUserService = async (id, data) => {
   return user;
 };
 
-export const deactivateUserService = async (id) => {
-  const updated = await db
+export const deactivateUserService = async (id: string) => {
+  const [updated] = await db
     .update(users)
     .set({
       isActive: false,
@@ -132,8 +141,8 @@ export const deactivateUserService = async (id) => {
   return updated;
 };
 
-export const activateUserService = async (id) => {
-  const updated = await db
+export const activateUserService = async (id: string) => {
+  const [updated] = await db
     .update(users)
     .set({
       isActive: true,

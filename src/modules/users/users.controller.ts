@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { getRoleByName } from '../roles/roles.service.js';
 import { sendSuccess, sendError } from '../../shared/utils/response.js';
 import {
@@ -10,33 +11,33 @@ import {
   updateUserService,
 } from './users.service.js';
 
-export const getUsers = async (req, res) => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
     let result;
 
-    if (req.query.role) {
+    if (req.query.role && typeof req.query.role === 'string') {
       result = await getUserByRoleService(req.query.role);
     } else {
       result = await getALLUsersService();
     }
 
     return sendSuccess(res, result, 'Users fetched successfully');
-  } catch (error) {
-    return sendError(res, error.message, 400);
+  } catch (error: any) {
+    return sendError(res, error.message || 'Error', 400);
   }
 };
 
-export const getUserById = async (req, res) => {
+export const getUserById = async (req: Request, res: Response) => {
   try {
-    const result = await getUserByIdService(req.params.id);
+    const result = await getUserByIdService(req.params.id as string);
 
     return sendSuccess(res, result, 'User fetched successfully');
-  } catch (error) {
-    return sendError(res, error.message, 400);
+  } catch (error: any) {
+    return sendError(res, error.message || 'Error', 400);
   }
 };
 
-export const createOB = async (req, res) => {
+export const createOB = async (req: Request, res: Response) => {
   try {
     const role = await getRoleByName('OB');
 
@@ -47,25 +48,25 @@ export const createOB = async (req, res) => {
     const result = await createUserService({ ...req.body, roleId: role.id });
 
     return sendSuccess(res, result, 'User created successfully');
-  } catch (error) {
-    return sendError(res, error.message, 400);
+  } catch (error: any) {
+    return sendError(res, error.message || 'Error', 400);
   }
 };
 
-export const updateUser = async (req, res) => {
+export const updateUser = async (req: Request, res: Response) => {
   try {
-    const user = await getUserByIdService(req.params.id);
+    const user = await getUserByIdService(req.params.id as string);
     const result = await updateUserService(user.id, req.body);
 
     return sendSuccess(res, result, 'User updated successfully');
-  } catch (error) {
-    return sendError(res, error.message, 400);
+  } catch (error: any) {
+    return sendError(res, error.message || 'Error', 400);
   }
 };
 
-export const updateUserStatus = async (req, res) => {
+export const updateUserStatus = async (req: Request, res: Response) => {
   try {
-    const user = await getUserByIdService(req.params.id);
+    const user = await getUserByIdService(req.params.id as string);
     let result;
     if (user.isActive) {
       result = await deactivateUserService(user.id);
@@ -74,7 +75,7 @@ export const updateUserStatus = async (req, res) => {
     }
 
     return sendSuccess(res, result, 'User updated successfully');
-  } catch (error) {
-    return sendError(res, error.message, 400);
+  } catch (error: any) {
+    return sendError(res, error.message || 'Error', 400);
   }
 };

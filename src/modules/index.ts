@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { getHealth } from './health/healthController.js';
 import { db } from '../shared/db/index.js';
 import { users } from '../shared/db/schema.js';
@@ -12,13 +12,13 @@ router.get('/health', getHealth);
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
 
-router.get('/db-test', async (req, res) => {
+router.get('/db-test', async (req: Request, res: Response) => {
   try {
     const result = await db.select().from(users);
     return sendSuccess(res, result);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return sendError(res, error.message, 500);
+    return sendError(res, error.message || 'Database error', 500);
   }
 });
 

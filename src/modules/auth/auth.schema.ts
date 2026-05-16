@@ -21,4 +21,8 @@ export const changePasswordSchema = z.object({
   passwordConfirmation: z
     .string()
     .min(8, 'Password confirmation must be at least 8 characters long'),
-}); 
+});
+
+export type RegisterInput = z.infer<typeof registerSchema>;
+export type LoginInput = z.infer<typeof loginSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

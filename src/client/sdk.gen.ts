@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetUsersByIdData, GetUsersByIdResponses, GetUsersData, GetUsersResponses, PostAuthLoginData, PostAuthLoginResponses, PostAuthRegisterData, PostAuthRegisterResponses, PutAuthChangePasswordData, PutAuthChangePasswordResponses } from './types.gen';
+import type { DeleteBuildingsByIdData, DeleteBuildingsByIdResponses, DeleteRoomsByIdData, DeleteRoomsByIdResponses, GetBuildingsByIdData, GetBuildingsByIdResponses, GetBuildingsData, GetBuildingsResponses, GetRoomsByIdData, GetRoomsByIdResponses, GetRoomsData, GetRoomsResponses, GetUsersByIdData, GetUsersByIdResponses, GetUsersData, GetUsersResponses, PatchUsersByIdStatusData, PatchUsersByIdStatusResponses, PostAuthLoginData, PostAuthLoginResponses, PostAuthRegisterData, PostAuthRegisterResponses, PostBuildingsData, PostBuildingsResponses, PostRoomsData, PostRoomsResponses, PostUsersObData, PostUsersObResponses, PutAuthChangePasswordData, PutAuthChangePasswordResponses, PutBuildingsByIdData, PutBuildingsByIdResponses, PutRoomsByIdData, PutRoomsByIdResponses, PutUsersByIdData, PutUsersByIdResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -60,6 +60,113 @@ export const putAuthChangePassword = <ThrowOnError extends boolean = false>(opti
 export const getUsers = <ThrowOnError extends boolean = false>(options?: Options<GetUsersData, ThrowOnError>) => (options?.client ?? client).get<GetUsersResponses, unknown, ThrowOnError>({ url: '/users', ...options });
 
 /**
+ * Create OB User
+ */
+export const postUsersOb = <ThrowOnError extends boolean = false>(options?: Options<PostUsersObData, ThrowOnError>) => (options?.client ?? client).post<PostUsersObResponses, unknown, ThrowOnError>({
+    url: '/users/OB',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
  * Get user by id
  */
 export const getUsersById = <ThrowOnError extends boolean = false>(options: Options<GetUsersByIdData, ThrowOnError>) => (options.client ?? client).get<GetUsersByIdResponses, unknown, ThrowOnError>({ url: '/users/{id}', ...options });
+
+/**
+ * Update user
+ */
+export const putUsersById = <ThrowOnError extends boolean = false>(options: Options<PutUsersByIdData, ThrowOnError>) => (options.client ?? client).put<PutUsersByIdResponses, unknown, ThrowOnError>({
+    url: '/users/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Update user status
+ */
+export const patchUsersByIdStatus = <ThrowOnError extends boolean = false>(options: Options<PatchUsersByIdStatusData, ThrowOnError>) => (options.client ?? client).patch<PatchUsersByIdStatusResponses, unknown, ThrowOnError>({ url: '/users/{id}/status', ...options });
+
+/**
+ * Get all buildings
+ */
+export const getBuildings = <ThrowOnError extends boolean = false>(options?: Options<GetBuildingsData, ThrowOnError>) => (options?.client ?? client).get<GetBuildingsResponses, unknown, ThrowOnError>({ url: '/buildings', ...options });
+
+/**
+ * Create building
+ */
+export const postBuildings = <ThrowOnError extends boolean = false>(options?: Options<PostBuildingsData, ThrowOnError>) => (options?.client ?? client).post<PostBuildingsResponses, unknown, ThrowOnError>({
+    url: '/buildings',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Delete building
+ */
+export const deleteBuildingsById = <ThrowOnError extends boolean = false>(options: Options<DeleteBuildingsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteBuildingsByIdResponses, unknown, ThrowOnError>({ url: '/buildings/{id}', ...options });
+
+/**
+ * Get building by id
+ */
+export const getBuildingsById = <ThrowOnError extends boolean = false>(options: Options<GetBuildingsByIdData, ThrowOnError>) => (options.client ?? client).get<GetBuildingsByIdResponses, unknown, ThrowOnError>({ url: '/buildings/{id}', ...options });
+
+/**
+ * Update building
+ */
+export const putBuildingsById = <ThrowOnError extends boolean = false>(options: Options<PutBuildingsByIdData, ThrowOnError>) => (options.client ?? client).put<PutBuildingsByIdResponses, unknown, ThrowOnError>({
+    url: '/buildings/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get all rooms
+ */
+export const getRooms = <ThrowOnError extends boolean = false>(options?: Options<GetRoomsData, ThrowOnError>) => (options?.client ?? client).get<GetRoomsResponses, unknown, ThrowOnError>({ url: '/rooms', ...options });
+
+/**
+ * Create room
+ */
+export const postRooms = <ThrowOnError extends boolean = false>(options?: Options<PostRoomsData, ThrowOnError>) => (options?.client ?? client).post<PostRoomsResponses, unknown, ThrowOnError>({
+    url: '/rooms',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Delete room
+ */
+export const deleteRoomsById = <ThrowOnError extends boolean = false>(options: Options<DeleteRoomsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteRoomsByIdResponses, unknown, ThrowOnError>({ url: '/rooms/{id}', ...options });
+
+/**
+ * Get room by id
+ */
+export const getRoomsById = <ThrowOnError extends boolean = false>(options: Options<GetRoomsByIdData, ThrowOnError>) => (options.client ?? client).get<GetRoomsByIdResponses, unknown, ThrowOnError>({ url: '/rooms/{id}', ...options });
+
+/**
+ * Update room
+ */
+export const putRoomsById = <ThrowOnError extends boolean = false>(options: Options<PutRoomsByIdData, ThrowOnError>) => (options.client ?? client).put<PutRoomsByIdResponses, unknown, ThrowOnError>({
+    url: '/rooms/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

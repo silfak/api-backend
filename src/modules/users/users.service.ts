@@ -2,6 +2,7 @@ import { db } from '../../shared/db/index.js';
 import { users, NewUser } from '../../shared/db/schema.js';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
+import { NotFoundError, ConflictError } from '../../shared/utils/errors.js';
 
 export const getALLUsersService = async () => {
   const allUsers = await db.query.users.findMany({
@@ -71,7 +72,7 @@ export const getUserByIdService = async (id: string) => {
   });
 
   if (!user) {
-    throw new Error('User not found');
+    throw new NotFoundError('User not found');
   }
 
   return user;
@@ -89,7 +90,7 @@ export const createUserService = async (data: CreateUserData) => {
   });
 
   if (existingUser) {
-    throw new Error('User already exists');
+    throw new ConflictError('User already exists');
   }
 
   const [user] = await db
@@ -118,7 +119,7 @@ export const updateUserService = async (id: string, data: Partial<NewUser>) => {
   });
 
   if (!user) {
-    throw new Error('User not found');
+    throw new NotFoundError('User not found');
   }
 
   return user;
@@ -138,6 +139,10 @@ export const deactivateUserService = async (id: string) => {
       isActive: users.isActive,
     });
 
+  if (!updated) {
+    throw new NotFoundError('User not found');
+  }
+
   return updated;
 };
 
@@ -154,6 +159,10 @@ export const activateUserService = async (id: string) => {
       email: users.email,
       isActive: users.isActive,
     });
+
+  if (!updated) {
+    throw new NotFoundError('User not found');
+  }
 
   return updated;
 };

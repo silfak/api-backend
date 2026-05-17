@@ -1,14 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
-import { sendError } from '../utils/response.js';
+import { AppError, ValidationError } from '../utils/errors.js';
 
-// Extend Error interface for custom status codes
-export interface AppError extends Error {
-  statusCode?: number;
-}
+export function errorHandler(err: Error, _req: Request, res: Response, _next: NextFunction) {
+  // Known application errors — send the proper status code and message.
+  if (err instanceof ValidationError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+      errors: err.errors,
+    });
+  }
 
-export function errorHandler(err: AppError, req: Request, res: Response, _next: NextFunction) {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal server error';
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+    });
+  }
 
-  return sendError(res, message, statusCode);
+  // Unknown / unexpected errors — hide internals, log for debugging.
+  console.error('[UnhandledError]', err);
+
+  return res.status(500).json({
+    success: false,
+    message: 'Internal server error',
+  });
 }

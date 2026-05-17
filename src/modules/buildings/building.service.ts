@@ -56,27 +56,39 @@ export const createBuildingService = async (data: CreateBuildingInput) => {
 };
 
 export const updateBuildingService = async (id: string, data: UpdateBuildingInput) => {
-  const [building] = await db.update(buildings).set(data).where(eq(buildings.id, id)).returning({
-    id: buildings.id,
-    name: buildings.name,
+  const building = await db.query.buildings.findFirst({
+    where: {
+      id: id,
+    },
   });
 
   if (!building) {
     throw new NotFoundError('Building not found');
   }
+  
+  const [updatedBuilding] = await db.update(buildings).set(data).where(eq(buildings.id, id)).returning({
+    id: buildings.id,
+    name: buildings.name,
+  });
 
-  return building;
+  return updatedBuilding;
 };
 
 export const deleteBuildingService = async (id: string) => {
-  const [building] = await db.delete(buildings).where(eq(buildings.id, id)).returning({
-    id: buildings.id,
-    name: buildings.name,
+  const building = await db.query.buildings.findFirst({
+    where: {
+      id: id,
+    },
   });
-
+      
   if (!building) {
     throw new NotFoundError('Building not found');
   }
 
-  return building;
+  const [deletedBuilding] = await db.delete(buildings).where(eq(buildings.id, id)).returning({
+    id: buildings.id,
+    name: buildings.name,
+  });
+
+  return deletedBuilding;
 };

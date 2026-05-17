@@ -8,12 +8,12 @@ import { getAllRooms, getRoomById, createRoom, updateRoom, deleteRoom } from "./
 const roomsRouter = Router()
 
 roomsRouter.use(verifyToken)
-roomsRouter.use(authorizeRole([ROLES.ADMIN]))
 
 roomsRouter.get('/', getAllRooms)
 roomsRouter.get('/:id', getRoomById)
-roomsRouter.post('/', validateBody(createRoomSchema), createRoom)
-roomsRouter.put('/:id', validateBody(updateRoomSchema), updateRoom)
-roomsRouter.delete('/:id', deleteRoom)
+
+roomsRouter.post('/', validateBody(createRoomSchema), authorizeRole([ROLES.ADMIN]), createRoom)
+roomsRouter.put('/:id', validateBody(updateRoomSchema), authorizeRole([ROLES.ADMIN]), updateRoom)
+roomsRouter.delete('/:id', authorizeRole([ROLES.ADMIN]), deleteRoom)
 
 export default roomsRouter

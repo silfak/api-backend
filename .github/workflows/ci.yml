@@ -35,7 +35,3 @@ jobs:
       - name: Run ESLint
         run: npm run lint
         if: always()
-
-      - name: Check code format with Prettier
-        run: npx prettier --check src/**/*.js
-        if: always()

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import { sendError } from '../utils/response.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || '';
@@ -13,15 +13,6 @@ export interface JwtPayload {
     id: string;
     name: string;
   };
-}
-
-// Extend the Express Request to include our user payload
-declare global {
-  namespace Express {
-    interface Request {
-      user?: JwtPayload;
-    }
-  }
 }
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
@@ -38,7 +29,11 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     req.user = decoded;
     next();
   } catch (e) {
-    return sendError(res, 'Token tidak valid atau sudah expired.', 401);
+    if (e instanceof TokenExpiredError) {
+      return sendError(res, 'Token tidak valid atau sudah expired.', 401);
+    } else {
+      return sendError(res, 'Internal server error', 500);
+    }
   }
 };
 

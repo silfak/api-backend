@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSelectSchema } from "drizzle-orm/zod";
 import { buildings } from "../../shared/db/schema";
 import z from "zod";

@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, date, integer, boolean, timestamp, foreignKey, primaryKey, unique } from "drizzle-orm/pg-core"
+import { pgTable, uuid, varchar, date, integer, boolean, timestamp, unique } from "drizzle-orm/pg-core"
 import { sql, InferSelectModel, InferInsertModel } from "drizzle-orm"
 
 

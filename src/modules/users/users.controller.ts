@@ -22,8 +22,10 @@ export const getUsers = async (req: Request, res: Response) => {
     }
 
     return sendSuccess(res, result, 'Users fetched successfully');
-  } catch (error: any) {
-    return sendError(res, error.message || 'Error', 400);
+  } catch (error) {
+    if (error instanceof Error) {
+      return sendError(res, error.message || 'Error', 400);
+    }
   }
 };
 
@@ -32,8 +34,10 @@ export const getUserById = async (req: Request, res: Response) => {
     const result = await getUserByIdService(req.params.id as string);
 
     return sendSuccess(res, result, 'User fetched successfully');
-  } catch (error: any) {
-    return sendError(res, error.message || 'Error', 400);
+  } catch (error) {
+    if (error instanceof Error) {
+      return sendError(res, error.message || 'Error', 400);
+    }
   }
 };
 
@@ -48,8 +52,10 @@ export const createOB = async (req: Request, res: Response) => {
     const result = await createUserService({ ...req.body, roleId: role.id });
 
     return sendSuccess(res, result, 'User created successfully');
-  } catch (error: any) {
-    return sendError(res, error.message || 'Error', 400);
+  } catch (error) {
+    if (error instanceof Error) {
+      return sendError(res, error.message || 'Error', 400);
+    }
   }
 };
 
@@ -59,8 +65,10 @@ export const updateUser = async (req: Request, res: Response) => {
     const result = await updateUserService(user.id, req.body);
 
     return sendSuccess(res, result, 'User updated successfully');
-  } catch (error: any) {
-    return sendError(res, error.message || 'Error', 400);
+  } catch (error) {
+    if (error instanceof Error) {
+      return sendError(res, error.message || 'Error', 400);
+    }
   }
 };
 
@@ -75,7 +83,9 @@ export const updateUserStatus = async (req: Request, res: Response) => {
     }
 
     return sendSuccess(res, result, 'User updated successfully');
-  } catch (error: any) {
-    return sendError(res, error.message || 'Error', 400);
+  } catch (error) {
+    if (error instanceof Error) {
+      return sendError(res, error.message || 'Error', 400);
+    }
   }
 };

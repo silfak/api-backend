@@ -1,7 +1,7 @@
 import { db } from '../../shared/db/index.js';
-import { users, roles, NewUser, User } from '../../shared/db/schema.js';
+import { users, NewUser } from '../../shared/db/schema.js';
 import bcrypt from 'bcryptjs';
-import { eq, desc } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 export const getALLUsersService = async () => {
   const allUsers = await db.query.users.findMany({

@@ -5,7 +5,8 @@ import { users } from '../shared/db/schema';
 import authRouter from './auth/auth.router';
 import usersRouter from './users/users.router';
 import { sendSuccess, sendError } from '../shared/utils/response';
-import buildingsRouter from './buildings/buildings.route';
+import buildingsRouter from './buildings/buildings.route.js';
+import roomsRouter from './rooms/rooms.route.js';
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.get('/health', getHealth);
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
 router.use('/buildings', buildingsRouter);
+router.use('/rooms', roomsRouter);
 
 router.get('/db-test', async (req: Request, res: Response) => {
   try {

@@ -57,31 +57,43 @@ export const createRoomService = async (data: CreateRoomInput) => {
 }
 
 export const updateRoomService = async (id: string, data: UpdateRoomInput) => {
-    const [room] = await db.update(rooms).set(data).where(eq(rooms.id, id)).returning({
-        id: rooms.id,
-        name: rooms.name,
-        buildingId: rooms.buildingId,
-        floor: rooms.floor,
+    const room = await db.query.rooms.findFirst({
+        where: {
+            id: id
+        }
     });
 
     if (!room) {
         throw new NotFoundError('Room not found');
     }
 
-    return room;
+    const [updatedRoom] = await db.update(rooms).set(data).where(eq(rooms.id, id)).returning({
+        id: rooms.id,
+        name: rooms.name,
+        buildingId: rooms.buildingId,
+        floor: rooms.floor,
+    });
+
+    return updatedRoom;
 }
 
 export const deleteRoomService = async (id: string) => {
-    const [room] = await db.delete(rooms).where(eq(rooms.id, id)).returning({
-        id: rooms.id,
-        name: rooms.name,
-        buildingId: rooms.buildingId,
-        floor: rooms.floor,
+    const room = await db.query.rooms.findFirst({
+        where: {
+            id: id
+        }
     });
 
     if (!room) {
         throw new NotFoundError('Room not found');
     }
 
-    return room;
+    const [deletedRoom] = await db.delete(rooms).where(eq(rooms.id, id)).returning({
+        id: rooms.id,
+        name: rooms.name,
+        buildingId: rooms.buildingId,
+        floor: rooms.floor,
+    });
+
+    return deletedRoom;
 }

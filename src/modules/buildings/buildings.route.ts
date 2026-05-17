@@ -8,12 +8,12 @@ import { getAllBuildings, getBuildingById, createBuilding, updateBuilding, delet
 const buildingsRouter = Router()
 
 buildingsRouter.use(verifyToken)
-buildingsRouter.use(authorizeRole([ROLES.ADMIN]))
 
 buildingsRouter.get('/', getAllBuildings)
 buildingsRouter.get('/:id', getBuildingById)
-buildingsRouter.post('/', validateBody(createBuildingSchema), createBuilding)
-buildingsRouter.put('/:id', validateBody(updateBuildingSchema), updateBuilding)
-buildingsRouter.delete('/:id', deleteBuilding)
+
+buildingsRouter.post('/', validateBody(createBuildingSchema), authorizeRole([ROLES.ADMIN]), createBuilding)
+buildingsRouter.put('/:id', validateBody(updateBuildingSchema), authorizeRole([ROLES.ADMIN]), updateBuilding)
+buildingsRouter.delete('/:id', authorizeRole([ROLES.ADMIN]), deleteBuilding)
 
 export default buildingsRouter

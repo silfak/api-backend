@@ -1,8 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { UnauthorizedError, ForbiddenError } from '../utils/errors.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || '';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not defined');
+}
 
 // Define the shape of the decoded JWT payload
 export interface JwtPayload {
@@ -29,10 +33,10 @@ export const verifyToken = (req: Request, _res: Response, next: NextFunction) =>
     req.user = decoded;
     next();
   } catch (e) {
-    if (e instanceof TokenExpiredError) {
+    if (e instanceof jwt.TokenExpiredError) {
       return next(new UnauthorizedError('Token sudah expired'));
     }
-    if (e instanceof JsonWebTokenError) {
+    if (e instanceof jwt.JsonWebTokenError) {
       return next(new UnauthorizedError('Token tidak valid'));
     }
     next(e);
@@ -42,7 +46,7 @@ export const verifyToken = (req: Request, _res: Response, next: NextFunction) =>
 export const authorizeRole = (allowedRoles: string[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user || !allowedRoles.includes(req.user.role.name)) {
-      return next(new ForbiddenError('Anda tidak memiliki akses ke resource ini'));
+      return next(new ForbiddenError('Forbidden'));
     }
     next();
   };

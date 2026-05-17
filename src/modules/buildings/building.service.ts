@@ -2,6 +2,7 @@ import { eq, getColumns, sql } from 'drizzle-orm';
 import { db } from '../../shared/db';
 import { buildings, rooms } from '../../shared/db/schema';
 import { CreateBuildingInput, UpdateBuildingInput } from './buildings.schema';
+import { NotFoundError } from '../../shared/utils/errors';
 
 export const getAllBuildingsService = async () => {
   const buildingsList = await db
@@ -34,7 +35,7 @@ export const getBuildingByIdService = async (id: string) => {
   });
 
   if (!building) {
-    throw new Error('Building not found');
+    throw new NotFoundError('Building not found');
   }
 
   return building;
@@ -60,6 +61,10 @@ export const updateBuildingService = async (id: string, data: UpdateBuildingInpu
     name: buildings.name,
   });
 
+  if (!building) {
+    throw new NotFoundError('Building not found');
+  }
+
   return building;
 };
 
@@ -68,6 +73,10 @@ export const deleteBuildingService = async (id: string) => {
     id: buildings.id,
     name: buildings.name,
   });
+
+  if (!building) {
+    throw new NotFoundError('Building not found');
+  }
 
   return building;
 };

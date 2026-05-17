@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { getRoleByName } from '../roles/roles.service.js';
-import { sendSuccess, sendError } from '../../shared/utils/response.js';
+import { sendSuccess } from '../../shared/utils/response.js';
+import { NotFoundError } from '../../shared/utils/errors.js';
 import {
   activateUserService,
   createUserService,
@@ -11,7 +12,7 @@ import {
   updateUserService,
 } from './users.service.js';
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     let result;
 
@@ -23,56 +24,45 @@ export const getUsers = async (req: Request, res: Response) => {
 
     return sendSuccess(res, result, 'Users fetched successfully');
   } catch (error) {
-    if (error instanceof Error) {
-      return sendError(res, error.message || 'Error', 400);
-    }
+    next(error);
   }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await getUserByIdService(req.params.id as string);
-
     return sendSuccess(res, result, 'User fetched successfully');
   } catch (error) {
-    if (error instanceof Error) {
-      return sendError(res, error.message || 'Error', 400);
-    }
+    next(error);
   }
 };
 
-export const createOB = async (req: Request, res: Response) => {
+export const createOB = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const role = await getRoleByName('OB');
 
     if (!role || !role.id) {
-      return sendError(res, 'Role "OB" tidak ditemukan di database.', 404);
+      throw new NotFoundError('Role "OB" tidak ditemukan di database.');
     }
 
     const result = await createUserService({ ...req.body, roleId: role.id });
-
-    return sendSuccess(res, result, 'User created successfully');
+    return sendSuccess(res, result, 'User created successfully', 201);
   } catch (error) {
-    if (error instanceof Error) {
-      return sendError(res, error.message || 'Error', 400);
-    }
+    next(error);
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await getUserByIdService(req.params.id as string);
     const result = await updateUserService(user.id, req.body);
-
     return sendSuccess(res, result, 'User updated successfully');
   } catch (error) {
-    if (error instanceof Error) {
-      return sendError(res, error.message || 'Error', 400);
-    }
+    next(error);
   }
 };
 
-export const updateUserStatus = async (req: Request, res: Response) => {
+export const updateUserStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await getUserByIdService(req.params.id as string);
     let result;
@@ -84,8 +74,6 @@ export const updateUserStatus = async (req: Request, res: Response) => {
 
     return sendSuccess(res, result, 'User updated successfully');
   } catch (error) {
-    if (error instanceof Error) {
-      return sendError(res, error.message || 'Error', 400);
-    }
+    next(error);
   }
 };

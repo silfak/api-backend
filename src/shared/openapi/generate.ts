@@ -25,11 +25,45 @@ registry.register('CreateRoomInput', createRoomSchema);
 registry.register('UpdateRoomInput', updateRoomSchema);
 registry.register('Room', roomSchema);
 
-// Example Response Schema
+// --- Reusable Response Schemas ---
+
 const SuccessResponse = z.object({
-  status: z.string(),
+  success: z.boolean(),
   message: z.string(),
 });
+
+const ErrorResponse = z.object({
+  success: z.literal(false),
+  message: z.string(),
+});
+
+const ValidationErrorResponse = z.object({
+  success: z.literal(false),
+  message: z.string(),
+  errors: z.array(z.object({
+    field: z.string(),
+    message: z.string(),
+  })),
+});
+
+registry.register('ErrorResponse', ErrorResponse);
+registry.register('ValidationErrorResponse', ValidationErrorResponse);
+
+// Helper for common error responses
+const commonErrors = {
+  401: {
+    description: 'Unauthenticated — token missing or invalid',
+    content: { 'application/json': { schema: ErrorResponse } },
+  },
+  403: {
+    description: 'Forbidden — insufficient permissions',
+    content: { 'application/json': { schema: ErrorResponse } },
+  },
+  500: {
+    description: 'Internal server error',
+    content: { 'application/json': { schema: ErrorResponse } },
+  },
+} as const;
 
 // --- Auth Routes ---
 registry.registerPath({
@@ -44,11 +78,20 @@ registry.registerPath({
   },
   responses: {
     201: {
-      description: 'Success Response',
+      description: 'User registered successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: userByIdSchema }) },
       },
     },
+    409: {
+      description: 'Conflict — user or NIM already exists',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -64,7 +107,7 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Login successful',
       content: {
         'application/json': {
           schema: SuccessResponse.extend({
@@ -76,6 +119,15 @@ registry.registerPath({
         },
       },
     },
+    401: {
+      description: 'Invalid credentials',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    500: commonErrors[500],
   },
 });
 
@@ -91,11 +143,20 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Password changed successfully',
       content: {
         'application/json': { schema: SuccessResponse },
       },
     },
+    400: {
+      description: 'Bad request — passwords do not match',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -107,11 +168,12 @@ registry.registerPath({
   summary: 'Get all users',
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Users fetched successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: z.array(userListItemSchema) }) },
       },
     },
+    ...commonErrors,
   },
 });
 
@@ -127,11 +189,24 @@ registry.registerPath({
   },
   responses: {
     201: {
-      description: 'Success Response',
+      description: 'OB user created successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: userByIdSchema }) },
       },
     },
+    404: {
+      description: 'Role OB not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    409: {
+      description: 'Conflict — user already exists',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -145,11 +220,16 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'User fetched successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: userByIdSchema }) },
       },
     },
+    404: {
+      description: 'User not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -166,11 +246,20 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'User updated successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: userByIdSchema }) },
       },
     },
+    404: {
+      description: 'User not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -184,11 +273,16 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'User status updated successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: userByIdSchema }) },
       },
     },
+    404: {
+      description: 'User not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -200,11 +294,12 @@ registry.registerPath({
   summary: 'Get all buildings',
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Buildings fetched successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: z.array(buildingSchema) }) },
       },
     },
+    ...commonErrors,
   },
 });
 
@@ -218,11 +313,16 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Building fetched successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: buildingSchema }) },
       },
     },
+    404: {
+      description: 'Building not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -238,11 +338,16 @@ registry.registerPath({
   },
   responses: {
     201: {
-      description: 'Success Response',
+      description: 'Building created successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: buildingSchema }) },
       },
     },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -259,11 +364,20 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Building updated successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: buildingSchema }) },
       },
     },
+    404: {
+      description: 'Building not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -277,11 +391,16 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Building deleted successfully',
       content: {
         'application/json': { schema: SuccessResponse },
       },
     },
+    404: {
+      description: 'Building not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -293,11 +412,12 @@ registry.registerPath({
   summary: 'Get all rooms',
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Rooms fetched successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: z.array(roomSchema) }) },
       },
     },
+    ...commonErrors,
   },
 });
 
@@ -311,11 +431,16 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Room fetched successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: roomSchema }) },
       },
     },
+    404: {
+      description: 'Room not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -331,11 +456,16 @@ registry.registerPath({
   },
   responses: {
     201: {
-      description: 'Success Response',
+      description: 'Room created successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: roomSchema }) },
       },
     },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -352,11 +482,20 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Room updated successfully',
       content: {
         'application/json': { schema: SuccessResponse.extend({ data: roomSchema }) },
       },
     },
+    404: {
+      description: 'Room not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 
@@ -370,11 +509,16 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: 'Success Response',
+      description: 'Room deleted successfully',
       content: {
         'application/json': { schema: SuccessResponse },
       },
     },
+    404: {
+      description: 'Room not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
   },
 });
 

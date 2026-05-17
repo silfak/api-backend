@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { TokenExpiredError } from 'jsonwebtoken';
-import { sendError } from '../utils/response.js';
+import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
+import { UnauthorizedError, ForbiddenError } from '../utils/errors.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
@@ -15,11 +15,11 @@ export interface JwtPayload {
   };
 }
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+export const verifyToken = (req: Request, _res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return sendError(res, 'unauthenticated', 401);
+    return next(new UnauthorizedError('Token tidak ditemukan'));
   }
 
   const token = authHeader.split(' ')[1];
@@ -30,17 +30,19 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     next();
   } catch (e) {
     if (e instanceof TokenExpiredError) {
-      return sendError(res, 'Token tidak valid atau sudah expired.', 401);
-    } else {
-      return sendError(res, 'Internal server error', 500);
+      return next(new UnauthorizedError('Token sudah expired'));
     }
+    if (e instanceof JsonWebTokenError) {
+      return next(new UnauthorizedError('Token tidak valid'));
+    }
+    next(e);
   }
 };
 
 export const authorizeRole = (allowedRoles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user || !allowedRoles.includes(req.user.role.name)) {
-      return sendError(res, 'Forbidden', 403);
+      return next(new ForbiddenError('Anda tidak memiliki akses ke resource ini'));
     }
     next();
   };

@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import { getRoleByName } from '../roles/roles.service';
 import { eq } from 'drizzle-orm';
 import { RegisterInput, LoginInput, ChangePasswordInput } from './auth.schema';
+import { ConflictError, NotFoundError, BadRequestError, UnauthorizedError } from '../../shared/utils/errors';
 
 export const registerService = async (data: RegisterInput) => {
   const existingUser = await db.query.users.findFirst({
@@ -14,7 +15,7 @@ export const registerService = async (data: RegisterInput) => {
   });
 
   if (existingUser) {
-    throw new Error('User already exists');
+    throw new ConflictError('User already exists');
   }
 
   const existingNim = await db.query.users.findFirst({
@@ -24,11 +25,11 @@ export const registerService = async (data: RegisterInput) => {
   });
 
   if (existingNim) {
-    throw new Error('NIM already exists');
+    throw new ConflictError('NIM already exists');
   }
 
   if (data.password !== data.passwordConfirmation) {
-    throw new Error('Passwords do not match');
+    throw new BadRequestError('Passwords do not match');
   }
 
   const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -36,7 +37,7 @@ export const registerService = async (data: RegisterInput) => {
   const mahasiswaRole = await getRoleByName('MAHASISWA');
 
   if (!mahasiswaRole) {
-    throw new Error('Role MAHASISWA not found');
+    throw new NotFoundError('Role MAHASISWA not found');
   }
 
   const [newUser] = await db
@@ -69,13 +70,13 @@ export const loginService = async (data: LoginInput) => {
   });
 
   if (!user) {
-    throw new Error('user not found');
+    throw new UnauthorizedError('Email atau password salah');
   }
 
   const isPasswordValid = await bcrypt.compare(data.password, user.password);
 
   if (!isPasswordValid) {
-    throw new Error('Email atau password salah');
+    throw new UnauthorizedError('Email atau password salah');
   }
 
   const payload = {
@@ -99,21 +100,21 @@ export const changePasswordService = async (userId: string, data: ChangePassword
   });
 
   if (!user) {
-    throw new Error('user not found');
+    throw new NotFoundError('User not found');
   }
 
   if (data.oldPassword === data.newPassword) {
-    throw new Error('Password baru dan password lama tidak boleh sama');
+    throw new BadRequestError('Password baru dan password lama tidak boleh sama');
   }
 
   if (data.newPassword !== data.passwordConfirmation) {
-    throw new Error('Password baru dan konfirmasi tidak cocok');
+    throw new BadRequestError('Password baru dan konfirmasi tidak cocok');
   }
 
   const isPasswordValid = await bcrypt.compare(data.oldPassword, user.password);
 
   if (!isPasswordValid) {
-    throw new Error('Password lama salah');
+    throw new UnauthorizedError('Password lama salah');
   }
 
   const hashedPassword = await bcrypt.hash(data.newPassword, 10);

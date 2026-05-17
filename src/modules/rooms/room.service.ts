@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../shared/db/index.js";
 import { rooms } from "../../shared/db/schema.js";
 import { CreateRoomInput, UpdateRoomInput } from "./rooms.schema.js";
+import { NotFoundError } from "../../shared/utils/errors.js";
 
 export const getAllRoomsService = async () => {
     const allRooms = await db.query.rooms.findMany({
@@ -33,6 +34,10 @@ export const getRoomByIdService = async (id: string) => {
         }
     });
 
+    if (!room) {
+        throw new NotFoundError('Room not found');
+    }
+
     return room;
 }
 
@@ -59,6 +64,10 @@ export const updateRoomService = async (id: string, data: UpdateRoomInput) => {
         floor: rooms.floor,
     });
 
+    if (!room) {
+        throw new NotFoundError('Room not found');
+    }
+
     return room;
 }
 
@@ -69,6 +78,10 @@ export const deleteRoomService = async (id: string) => {
         buildingId: rooms.buildingId,
         floor: rooms.floor,
     });
+
+    if (!room) {
+        throw new NotFoundError('Room not found');
+    }
 
     return room;
 }

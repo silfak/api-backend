@@ -30,3 +30,12 @@ export const userUpdateSchema = z.object({
   name: z.string().min(3).optional(),
   email: z.email().optional(),
 });
+
+export const CreateUserInput = usersSchema.extend({
+  roleId: z.string().uuid(),
+  nim: z.string().optional(),
+});
+
+export type CreateUserInput = z.infer<typeof CreateUserInput>;
+export type UpdateUserInput = z.infer<typeof userUpdateSchema>;
+export type UserByIdInput = z.infer<typeof userByIdSchema>;

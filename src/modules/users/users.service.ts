@@ -1,8 +1,9 @@
 import { db } from '../../shared/db/index.js';
-import { users, NewUser } from '../../shared/db/schema.js';
+import { users } from '../../shared/db/schema.js';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { NotFoundError, ConflictError } from '../../shared/utils/errors.js';
+import { CreateUserInput, UpdateUserInput } from './users.schema.js';
 
 export const getALLUsersService = async () => {
   const allUsers = await db.query.users.findMany({
@@ -78,9 +79,8 @@ export const getUserByIdService = async (id: string) => {
   return user;
 };
 
-type CreateUserData = Omit<NewUser, 'id' | 'createdAt' | 'isActive'> & { passwordConfirmation?: string };
 
-export const createUserService = async (data: CreateUserData) => {
+export const createUserService = async (data: CreateUserInput) => {
   const password = await bcrypt.hash(data.password, 10);
 
   const existingUser = await db.query.users.findFirst({
@@ -110,7 +110,7 @@ export const createUserService = async (data: CreateUserData) => {
   return user;
 };
 
-export const updateUserService = async (id: string, data: Partial<NewUser>) => {
+export const updateUserService = async (id: string, data: UpdateUserInput) => {
   const [user] = await db.update(users).set(data).where(eq(users.id, id)).returning({
     id: users.id,
     name: users.name,

@@ -8,6 +8,9 @@ import {
 } from './reports.service';
 import { ReportByIdInput, CreateReportInput, UpdateReportInput } from './reports.schema';
 import { sendSuccess } from '../../shared/utils/response';
+import { storageService } from '../../shared/services/storage.service';
+import crypto from 'crypto';
+import path from 'path';
 
 export const getReportsHandler = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,6 +34,14 @@ export const getReportByIdHandler = async (req: Request, res: Response, next: Ne
 export const createReportHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = req.body as CreateReportInput;
+    
+    if (req.file) {
+      const ext = path.extname(req.file.originalname);
+      const uniqueFileName = `reports/${crypto.randomUUID()}${ext}`;
+      await storageService.uploadFile(req.file.buffer, uniqueFileName, req.file.mimetype);
+      data.imageUrl = await storageService.getPresignedUrl(uniqueFileName);
+    }
+    
     const report = await createReport(data);
     return sendSuccess(res, report, 'Report created successfully', 201);
   } catch (error) {
@@ -42,6 +53,14 @@ export const updateReportHandler = async (req: Request, res: Response, next: Nex
   try {
     const { id } = req.params as unknown as ReportByIdInput;
     const data = req.body as UpdateReportInput;
+    
+    if (req.file) {
+      const ext = path.extname(req.file.originalname);
+      const uniqueFileName = `reports/${crypto.randomUUID()}${ext}`;
+      await storageService.uploadFile(req.file.buffer, uniqueFileName, req.file.mimetype);
+      data.imageUrl = await storageService.getPresignedUrl(uniqueFileName);
+    }
+    
     const report = await updateReport(id, data);
     return sendSuccess(res, report, 'Report updated successfully');
   } catch (error) {

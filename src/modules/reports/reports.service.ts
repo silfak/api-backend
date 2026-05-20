@@ -5,45 +5,45 @@ import { NotFoundError } from "../../shared/utils/errors";
 import { CreateReportInput, UpdateReportInput } from "./reports.schema";
 
 export const getAllReports = async () => {
-  const reports = await db.query.reports.findMany()
+    const reports = await db.query.reports.findMany()
 
-  return reports;
+    return reports;
 }
 
 export const getReportById = async (id: string) => {
- const report = await db.query.reports.findFirst({
-    with: {
-        room: {
-            with: {
-                building: true,
+    const report = await db.query.reports.findFirst({
+        with: {
+            room: {
+                with: {
+                    building: true,
+                },
+            },
+            category: true,
+            reporter: {
+                columns: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
             },
         },
-        category: true,
-        reporter: {
-            columns: {
-                id: true,
-                name: true,
-                email: true,
-            },
+        where: {
+            id: id
         },
-    },
-    where: {
-        id: id
-    },
-    columns: {
-        id: true,
-        description: true,
-        status: true,
-        imageUrl: true,
-        isUrgent: true
+        columns: {
+            id: true,
+            description: true,
+            status: true,
+            imageUrl: true,
+            isUrgent: true
+        }
+    })
+
+    if (!report) {
+        throw new NotFoundError('Report not found')
     }
- })
 
- if (!report) {
-    throw new NotFoundError('Report not found')
- }
-
- return report
+    return report
 
 }
 
@@ -84,6 +84,6 @@ export const deleteReport = async (id: string) => {
     }
 
     const report = await db.delete(reports).where(eq(reports.id, id)).returning()
-    
+
     return report
 }

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AppError, ValidationError } from '../utils/errors.js';
+import { AppError, ValidationError } from '../utils/errors';
 
 export function errorHandler(err: Error, _req: Request, res: Response, _next: NextFunction) {
   // Known application errors — send the proper status code and message.

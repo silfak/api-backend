@@ -1,5 +1,5 @@
 import { createSelectSchema } from "drizzle-orm/zod";
-import { rooms } from "../../shared/db/schema.js";
+import { rooms } from "../../shared/db/schema";
 import z from "zod";
 
 export const roomSchema = createSelectSchema(rooms);

@@ -1,12 +1,12 @@
 import { OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
 import * as fs from 'fs';
-import { registry } from './registry.js';
+import { registry } from './registry';
 import { z } from 'zod';
-import { registerSchema, loginSchema, changePasswordSchema } from '../../modules/auth/auth.schema.js';
-import { usersSchema, userListItemSchema, userByIdSchema, userUpdateSchema } from '../../modules/users/users.schema.js';
-import { createBuildingSchema, updateBuildingSchema, buildingSchema } from '../../modules/buildings/buildings.schema.js';
-import { createRoomSchema, updateRoomSchema, roomSchema } from '../../modules/rooms/rooms.schema.js';
-import { createReportSchema, updateReportSchema, reportSchema } from '../../modules/reports/reports.schema.js';
+import { registerSchema, loginSchema, changePasswordSchema } from '../../modules/auth/auth.schema';
+import { usersSchema, userListItemSchema, userByIdSchema, userUpdateSchema } from '../../modules/users/users.schema';
+import { createBuildingSchema, updateBuildingSchema, buildingSchema } from '../../modules/buildings/buildings.schema';
+import { createRoomSchema, updateRoomSchema, roomSchema } from '../../modules/rooms/rooms.schema';
+import { createReportSchema, updateReportSchema, reportSchema } from '../../modules/reports/reports.schema';
 
 // Register schemas
 registry.register('RegisterInput', registerSchema);

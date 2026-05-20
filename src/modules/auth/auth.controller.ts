@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { changePasswordService, loginService, registerService } from './auth.service.js';
-import { sendSuccess } from '../../shared/utils/response.js';
-import { UnauthorizedError } from '../../shared/utils/errors.js';
+import { changePasswordService, loginService, registerService } from './auth.service';
+import { sendSuccess } from '../../shared/utils/response';
+import { UnauthorizedError } from '../../shared/utils/errors';
 
 export const registerController = async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import authRouter from './auth/auth.router';
 import usersRouter from './users/users.router';
-import buildingsRouter from './buildings/buildings.route.js';
-import roomsRouter from './rooms/rooms.route.js';
+import buildingsRouter from './buildings/buildings.route';
+import roomsRouter from './rooms/rooms.route';
 import { categoriesRouter } from './categories/categories.route';
 import reportsRouter from './reports/reports.route';
 

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { getAllRoomsService, getRoomByIdService, createRoomService, updateRoomService, deleteRoomService } from "./room.service.js";
-import { RoomByIdInput, CreateRoomInput, UpdateRoomInput } from "./rooms.schema.js";
-import { sendSuccess } from "../../shared/utils/response.js";
+import { getAllRoomsService, getRoomByIdService, createRoomService, updateRoomService, deleteRoomService } from "./room.service";
+import { RoomByIdInput, CreateRoomInput, UpdateRoomInput } from "./rooms.schema";
+import { sendSuccess } from "../../shared/utils/response";
 
 export const getAllRooms = async (_req: Request, res: Response, next: NextFunction) => {
     try {

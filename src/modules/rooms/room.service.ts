@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
-import { db } from "../../shared/db/index.js";
-import { rooms } from "../../shared/db/schema.js";
-import { CreateRoomInput, UpdateRoomInput } from "./rooms.schema.js";
-import { NotFoundError } from "../../shared/utils/errors.js";
+import { db } from "../../shared/db/index";
+import { rooms } from "../../shared/db/schema";
+import { CreateRoomInput, UpdateRoomInput } from "./rooms.schema";
+import { NotFoundError } from "../../shared/utils/errors";
 
 export const getAllRoomsService = async () => {
     const allRooms = await db.query.rooms.findMany({

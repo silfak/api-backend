@@ -4,25 +4,26 @@ import { sql } from "drizzle-orm"
 
 
 export const buildings = pgTable("buildings", {
-	id: uuid().primaryKey(),
+	id: uuid().defaultRandom().primaryKey(),
 	name: varchar({ length: 100 }).notNull(),
 	createdAt: date("created_at").default(sql`now()`),
 });
 
 export const categories = pgTable("categories", {
-	id: uuid().primaryKey(),
+	id: uuid().defaultRandom().primaryKey(),
 	name: varchar({ length: 100 }).notNull(),
 	createdAt: date("created_at").default(sql`now()`),
 });
 
 export const reports = pgTable("reports", {
-	id: uuid().primaryKey(),
+	id: uuid().defaultRandom().primaryKey(),
 	userId: uuid("user_id").notNull().references(() => users.id),
 	roomId: uuid("room_id").notNull().references(() => rooms.id),
 	description: varchar({ length: 255 }),
 	imageUrl: varchar("image_url", { length: 255 }),
 	status: varchar({ length: 50 }),
 	isUrgent: boolean("is_urgent").default(false).notNull(),
+	categoryId: uuid("category_id").notNull().references(() => categories.id),
 });
 
 export const roles = pgTable("roles", {
@@ -31,7 +32,7 @@ export const roles = pgTable("roles", {
 });
 
 export const rooms = pgTable("rooms", {
-	id: uuid().primaryKey(),
+	id: uuid().defaultRandom().primaryKey(),
 	name: varchar({ length: 100 }).notNull(),
 	buildingId: uuid("building_id").notNull().references(() => buildings.id),
 	createdAt: date("created_at").default(sql`now()`),

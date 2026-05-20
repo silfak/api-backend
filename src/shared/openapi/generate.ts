@@ -6,6 +6,7 @@ import { registerSchema, loginSchema, changePasswordSchema } from '../../modules
 import { usersSchema, userListItemSchema, userByIdSchema, userUpdateSchema } from '../../modules/users/users.schema.js';
 import { createBuildingSchema, updateBuildingSchema, buildingSchema } from '../../modules/buildings/buildings.schema.js';
 import { createRoomSchema, updateRoomSchema, roomSchema } from '../../modules/rooms/rooms.schema.js';
+import { createReportSchema, updateReportSchema, reportSchema } from '../../modules/reports/reports.schema.js';
 
 // Register schemas
 registry.register('RegisterInput', registerSchema);
@@ -24,6 +25,10 @@ registry.register('Building', buildingSchema);
 registry.register('CreateRoomInput', createRoomSchema);
 registry.register('UpdateRoomInput', updateRoomSchema);
 registry.register('Room', roomSchema);
+
+registry.register('CreateReportInput', createReportSchema);
+registry.register('UpdateReportInput', updateReportSchema);
+registry.register('Report', reportSchema);
 
 // --- Reusable Response Schemas ---
 
@@ -516,6 +521,124 @@ registry.registerPath({
     },
     404: {
       description: 'Room not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
+
+// --- Reports Routes ---
+registry.registerPath({
+  method: 'get',
+  path: '/reports',
+  tags: ['reports'],
+  summary: 'Get all reports',
+  responses: {
+    200: {
+      description: 'Reports fetched successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: z.array(reportSchema) }) },
+      },
+    },
+    ...commonErrors,
+  },
+});
+
+registry.registerPath({
+  method: 'get',
+  path: '/reports/{id}',
+  tags: ['reports'],
+  summary: 'Get report by id',
+  request: {
+    params: z.object({ id: z.string() })
+  },
+  responses: {
+    200: {
+      description: 'Report fetched successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: reportSchema }) },
+      },
+    },
+    404: {
+      description: 'Report not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/reports',
+  tags: ['reports'],
+  summary: 'Create report',
+  request: {
+    body: {
+      content: { 'application/json': { schema: createReportSchema } },
+    },
+  },
+  responses: {
+    201: {
+      description: 'Report created successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: reportSchema }) },
+      },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
+
+registry.registerPath({
+  method: 'patch',
+  path: '/reports/{id}',
+  tags: ['reports'],
+  summary: 'Update report',
+  request: {
+    params: z.object({ id: z.string() }),
+    body: {
+      content: { 'application/json': { schema: updateReportSchema } },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Report updated successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: reportSchema }) },
+      },
+    },
+    404: {
+      description: 'Report not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
+
+registry.registerPath({
+  method: 'delete',
+  path: '/reports/{id}',
+  tags: ['reports'],
+  summary: 'Delete report',
+  request: {
+    params: z.object({ id: z.string() })
+  },
+  responses: {
+    200: {
+      description: 'Report deleted successfully',
+      content: {
+        'application/json': { schema: SuccessResponse },
+      },
+    },
+    404: {
+      description: 'Report not found',
       content: { 'application/json': { schema: ErrorResponse } },
     },
     ...commonErrors,

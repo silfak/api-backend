@@ -1,6 +1,6 @@
 import { db } from '../../shared/db/index';
 import { users } from '../../shared/db/schema';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { NotFoundError, ConflictError } from '../../shared/utils/errors';
 import { CreateUserInput, UpdateUserInput } from './users.schema';

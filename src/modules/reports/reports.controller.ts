@@ -31,7 +31,8 @@ export const getReportByIdHandler = async (req: Request, res: Response, next: Ne
 export const createReportHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = req.body as CreateReportInput;
-    const report = await createReport(data);
+    const reporterId = req.user!.id;
+    const report = await createReport(data, reporterId);
     return sendSuccess(res, report, 'Report created successfully', 201);
   } catch (error) {
     next(error);

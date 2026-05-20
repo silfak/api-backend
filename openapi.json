@@ -308,10 +308,6 @@
       "CreateReportInput": {
         "type": "object",
         "properties": {
-          "reporterId": {
-            "type": "string",
-            "format": "uuid"
-          },
           "roomId": {
             "type": "string",
             "format": "uuid"
@@ -343,7 +339,6 @@
           }
         },
         "required": [
-          "reporterId",
           "roomId",
           "description",
           "categoryId"
@@ -352,10 +347,6 @@
       "UpdateReportInput": {
         "type": "object",
         "properties": {
-          "reporterId": {
-            "type": "string",
-            "format": "uuid"
-          },
           "roomId": {
             "type": "string",
             "format": "uuid"
@@ -4094,10 +4085,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "reporterId": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
                   "roomId": {
                     "type": "string",
                     "format": "uuid"
@@ -4129,7 +4116,6 @@
                   }
                 },
                 "required": [
-                  "reporterId",
                   "roomId",
                   "description",
                   "categoryId"
@@ -4545,10 +4531,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "reporterId": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
                   "roomId": {
                     "type": "string",
                     "format": "uuid"

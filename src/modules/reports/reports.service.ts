@@ -25,6 +25,14 @@ export const getReportById = async (id: string) => {
                     name: true,
                     email: true,
                 },
+                with: {
+                    role: {
+                        columns: {
+                            id: true,
+                            name: true,
+                        }
+                    }
+                }
             },
         },
         where: {
@@ -66,8 +74,11 @@ export const updateReport = async (id: string, data: Partial<UpdateReportInput>)
     return report
 }
 
-export const createReport = async (data: CreateReportInput) => {
-    const report = await db.insert(reports).values(data).returning()
+export const createReport = async (data: CreateReportInput, reporterId: string) => {
+    const report = await db.insert(reports).values({
+        ...data,
+        reporterId,
+    }).returning()
 
     return report
 }

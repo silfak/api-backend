@@ -1,9 +1,9 @@
-import { db } from '../../shared/db/index.js';
-import { users } from '../../shared/db/schema.js';
+import { db } from '../../shared/db/index';
+import { users } from '../../shared/db/schema';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
-import { NotFoundError, ConflictError } from '../../shared/utils/errors.js';
-import { CreateUserInput, UpdateUserInput } from './users.schema.js';
+import { NotFoundError, ConflictError } from '../../shared/utils/errors';
+import { CreateUserInput, UpdateUserInput } from './users.schema';
 
 export const getALLUsersService = async () => {
   const allUsers = await db.query.users.findMany({

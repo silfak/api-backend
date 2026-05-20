@@ -1,10 +1,10 @@
 import cors from 'cors';
 import express, { Request, Response, NextFunction } from 'express';
-import { env } from './shared/config/env.js';
-import { errorHandler } from './shared/middlewares/errorHandler.js';
-import apiRoutes from './modules/index.js';
-import { sendSuccess } from './shared/utils/response.js';
-import { NotFoundError } from './shared/utils/errors.js';
+import { env } from './shared/config/env';
+import { errorHandler } from './shared/middlewares/errorHandler';
+import apiRoutes from './modules/index';
+import { sendSuccess } from './shared/utils/response';
+import { NotFoundError } from './shared/utils/errors';
 
 const app = express();
 

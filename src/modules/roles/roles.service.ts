@@ -1,4 +1,4 @@
-import { db } from '../../shared/db/index.js';
+import { db } from '../../shared/db/index';
 
 export const getRoleByName = async (name: string) => {
   const role = await db.query.roles.findFirst({

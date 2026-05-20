@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { getRoleByName } from '../roles/roles.service.js';
-import { sendSuccess } from '../../shared/utils/response.js';
-import { NotFoundError } from '../../shared/utils/errors.js';
+import { getRoleByName } from '../roles/roles.service';
+import { sendSuccess } from '../../shared/utils/response';
+import { NotFoundError } from '../../shared/utils/errors';
 import {
   activateUserService,
   createUserService,
@@ -10,7 +10,7 @@ import {
   getUserByIdService,
   getUserByRoleService,
   updateUserService,
-} from './users.service.js';
+} from './users.service';
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {

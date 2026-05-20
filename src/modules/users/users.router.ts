@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { validateBody } from '../../shared/middlewares/validation.middleware.js';
-import { usersSchema, userUpdateSchema } from './users.schema.js';
-import * as usersController from './users.controller.js';
-import { authorizeRole, verifyToken } from '../../shared/middlewares/auth.middleware.js';
-import { ROLES } from '../../shared/utils/roles.js';
+import { validateBody } from '../../shared/middlewares/validation.middleware';
+import { usersSchema, userUpdateSchema } from './users.schema';
+import * as usersController from './users.controller';
+import { authorizeRole, verifyToken } from '../../shared/middlewares/auth.middleware';
+import { ROLES } from '../../shared/utils/roles';
 
 const usersRouter = Router();
 

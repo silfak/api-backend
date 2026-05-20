@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCategorySchema, updateCategorySchema, categoryByIdSchema } from "./categories.schema";
+import { createCategorySchema, updateCategorySchema} from "./categories.schema";
 import { getAllCategoriesController, getCategoryByIdController, createCategoryController, updateCategoryController, deleteCategoryController } from "./categories.controller";
 import { validateBody } from "../../shared/middlewares/validation.middleware";
 import { authorizeRole, verifyToken } from "../../shared/middlewares/auth.middleware";

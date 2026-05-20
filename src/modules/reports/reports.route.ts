@@ -3,12 +3,12 @@ import { authorizeRole, verifyToken } from "../../shared/middlewares/auth.middle
 import { ROLES } from "../../shared/utils/roles";
 import { validateBody } from "../../shared/middlewares/validation.middleware";
 import { createReportSchema, updateReportSchema } from "./reports.schema";
-import { 
-    getReportsHandler, 
-    getReportByIdHandler, 
-    createReportHandler, 
-    updateReportHandler, 
-    deleteReportHandler 
+import {
+    getReportsHandler,
+    getReportByIdHandler,
+    createReportHandler,
+    updateReportHandler,
+    deleteReportHandler
 } from "./reports.controller";
 
 const reportsRouter = Router();

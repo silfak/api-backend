@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "../../shared/db"
-import { reports } from "../../shared/db/schema";
+import { reports, categories, rooms, buildings, users } from "../../shared/db/schema";
 import { NotFoundError } from "../../shared/utils/errors";
 import { CreateReportInput, UpdateReportInput } from "./reports.schema";
 
@@ -97,4 +97,82 @@ export const deleteReport = async (id: string) => {
     const report = await db.delete(reports).where(eq(reports.id, id)).returning()
 
     return report
+}
+
+export const getDashboardStats = async () => {
+    // 1. Summary counts using conditional aggregation
+    const [summary] = await db
+        .select({
+            totalReports: sql<number>`cast(count(*) as int)`,
+            pendingReports: sql<number>`cast(count(case when ${reports.status} in ('REPORTED', 'IN_PROGRESS') then 1 end) as int)`,
+            resolvedReports: sql<number>`cast(count(case when ${reports.status} = 'RESOLVED' then 1 end) as int)`,
+        })
+        .from(reports);
+
+    // 2. Category trend – report count per category
+    const categoryTrend = await db
+        .select({
+            categoryName: categories.name,
+            count: sql<number>`cast(count(*) as int)`,
+        })
+        .from(reports)
+        .innerJoin(categories, eq(reports.categoryId, categories.id))
+        .groupBy(categories.name)
+        .orderBy(sql`count(*) desc`);
+
+    // 3. Top 3 rooms with the most reports
+    const topRooms = await db
+        .select({
+            roomName: rooms.name,
+            floor: rooms.floor,
+            buildingName: buildings.name,
+            count: sql<number>`cast(count(*) as int)`,
+        })
+        .from(reports)
+        .innerJoin(rooms, eq(reports.roomId, rooms.id))
+        .innerJoin(buildings, eq(rooms.buildingId, buildings.id))
+        .groupBy(rooms.name, rooms.floor, buildings.name)
+        .orderBy(sql`count(*) desc`)
+        .limit(3);
+
+    return {
+        summary,
+        categoryTrend,
+        topRooms,
+    };
+}
+
+export const getReportsForExport = async (month?: number, year?: number) => {
+    const conditions = [eq(reports.roomId, rooms.id), eq(rooms.buildingId, buildings.id), eq(reports.categoryId, categories.id), eq(reports.reporterId, users.id)];
+
+    if (month && year) {
+        conditions.push(sql`extract(month from ${reports.createdAt}) = ${month}`);
+        conditions.push(sql`extract(year from ${reports.createdAt}) = ${year}`);
+    } else if (year) {
+        conditions.push(sql`extract(year from ${reports.createdAt}) = ${year}`);
+    }
+
+    const allReports = await db
+        .select({
+            id: reports.id,
+            description: reports.description,
+            status: reports.status,
+            isUrgent: reports.isUrgent,
+            imageUrl: reports.imageUrl,
+            createdAt: reports.createdAt,
+            categoryName: categories.name,
+            roomName: rooms.name,
+            floor: rooms.floor,
+            buildingName: buildings.name,
+            reporterName: users.name,
+            reporterEmail: users.email,
+        })
+        .from(reports)
+        .innerJoin(rooms, eq(reports.roomId, rooms.id))
+        .innerJoin(buildings, eq(rooms.buildingId, buildings.id))
+        .innerJoin(categories, eq(reports.categoryId, categories.id))
+        .innerJoin(users, eq(reports.reporterId, users.id))
+        .where(sql.join(conditions, sql` and `));
+
+    return allReports;
 }

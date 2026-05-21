@@ -412,6 +412,11 @@
           "categoryId": {
             "type": "string",
             "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
           }
         },
         "required": [
@@ -422,7 +427,8 @@
           "imageUrl",
           "status",
           "isUrgent",
-          "categoryId"
+          "categoryId",
+          "createdAt"
         ]
       },
       "ErrorResponse": {
@@ -478,6 +484,79 @@
           "success",
           "message",
           "errors"
+        ]
+      },
+      "DashboardResponse": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "object",
+            "properties": {
+              "totalReports": {
+                "type": "number"
+              },
+              "pendingReports": {
+                "type": "number"
+              },
+              "resolvedReports": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "totalReports",
+              "pendingReports",
+              "resolvedReports"
+            ]
+          },
+          "categoryTrend": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "categoryName": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "categoryName",
+                "count"
+              ]
+            }
+          },
+          "topRooms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "roomName": {
+                  "type": "string"
+                },
+                "floor": {
+                  "type": "number"
+                },
+                "buildingName": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "roomName",
+                "floor",
+                "buildingName",
+                "count"
+              ]
+            }
+          }
+        },
+        "required": [
+          "summary",
+          "categoryTrend",
+          "topRooms"
         ]
       }
     },
@@ -3973,6 +4052,11 @@
                           "categoryId": {
                             "type": "string",
                             "format": "uuid"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "nullable": true,
+                            "format": "date-time"
                           }
                         },
                         "required": [
@@ -3983,7 +4067,8 @@
                           "imageUrl",
                           "status",
                           "isUrgent",
-                          "categoryId"
+                          "categoryId",
+                          "createdAt"
                         ]
                       }
                     }
@@ -4174,6 +4259,11 @@
                         "categoryId": {
                           "type": "string",
                           "format": "uuid"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time"
                         }
                       },
                       "required": [
@@ -4184,7 +4274,8 @@
                         "imageUrl",
                         "status",
                         "isUrgent",
-                        "categoryId"
+                        "categoryId",
+                        "createdAt"
                       ]
                     }
                   },
@@ -4385,6 +4476,11 @@
                         "categoryId": {
                           "type": "string",
                           "format": "uuid"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time"
                         }
                       },
                       "required": [
@@ -4395,7 +4491,8 @@
                         "imageUrl",
                         "status",
                         "isUrgent",
-                        "categoryId"
+                        "categoryId",
+                        "createdAt"
                       ]
                     }
                   },
@@ -4613,6 +4710,11 @@
                         "categoryId": {
                           "type": "string",
                           "format": "uuid"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time"
                         }
                       },
                       "required": [
@@ -4623,7 +4725,8 @@
                         "imageUrl",
                         "status",
                         "isUrgent",
-                        "categoryId"
+                        "categoryId",
+                        "createdAt"
                       ]
                     }
                   },
@@ -4872,6 +4975,333 @@
           },
           "404": {
             "description": "Report not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/dashboard": {
+      "get": {
+        "tags": [
+          "reports"
+        ],
+        "summary": "Get dashboard analytics (summary, category trend, top rooms)",
+        "responses": {
+          "200": {
+            "description": "Dashboard stats fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "summary": {
+                          "type": "object",
+                          "properties": {
+                            "totalReports": {
+                              "type": "number"
+                            },
+                            "pendingReports": {
+                              "type": "number"
+                            },
+                            "resolvedReports": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "totalReports",
+                            "pendingReports",
+                            "resolvedReports"
+                          ]
+                        },
+                        "categoryTrend": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "categoryName": {
+                                "type": "string"
+                              },
+                              "count": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "categoryName",
+                              "count"
+                            ]
+                          }
+                        },
+                        "topRooms": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "roomName": {
+                                "type": "string"
+                              },
+                              "floor": {
+                                "type": "number"
+                              },
+                              "buildingName": {
+                                "type": "string"
+                              },
+                              "count": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "roomName",
+                              "floor",
+                              "buildingName",
+                              "count"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "summary",
+                        "categoryTrend",
+                        "topRooms"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — token missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/export/csv": {
+      "get": {
+        "tags": [
+          "reports"
+        ],
+        "summary": "Export reports to CSV (optional month/year filter)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 12,
+              "description": "Filter by month (1-12)"
+            },
+            "required": false,
+            "description": "Filter by month (1-12)",
+            "name": "month",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 2000,
+              "description": "Filter by year (e.g. 2026)"
+            },
+            "required": false,
+            "description": "Filter by year (e.g. 2026)",
+            "name": "year",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV file download",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "description": "CSV file content"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — token missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — insufficient permissions",
             "content": {
               "application/json": {
                 "schema": {

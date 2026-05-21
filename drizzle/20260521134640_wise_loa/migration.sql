@@ -1,0 +1,1 @@
+ALTER TABLE "reports" ADD COLUMN "created_at" timestamp DEFAULT now();

@@ -6,7 +6,6 @@ import { STATUS } from "../../shared/utils/status";
 export const reportSchema = createSelectSchema(reports);
 
 export const createReportSchema = z.object({
-    reporterId: z.string().uuid(),
     roomId: z.string().uuid(),
     description: z.string().min(1),
     imageUrl: z.string().url().optional().or(z.literal('')),
@@ -19,7 +18,6 @@ export const createReportSchema = z.object({
 });
 
 export const updateReportSchema = z.object({
-    reporterId: z.string().uuid().optional(),
     roomId: z.string().uuid().optional(),
     description: z.string().min(1).optional(),
     imageUrl: z.string().url().optional().or(z.literal('')),

@@ -24,6 +24,7 @@ export const reports = pgTable("reports", {
 	status: varchar({ length: 50 }),
 	isUrgent: boolean("is_urgent").default(false).notNull(),
 	categoryId: uuid("category_id").notNull().references(() => categories.id),
+	createdAt: timestamp("created_at").default(sql`now()`),
 });
 
 export const roles = pgTable("roles", {

@@ -7,6 +7,7 @@ import { usersSchema, userListItemSchema, userByIdSchema, userUpdateSchema } fro
 import { createBuildingSchema, updateBuildingSchema, buildingSchema } from '../../modules/buildings/buildings.schema';
 import { createRoomSchema, updateRoomSchema, roomSchema } from '../../modules/rooms/rooms.schema';
 import { createReportSchema, updateReportSchema, reportSchema } from '../../modules/reports/reports.schema';
+import { categoriesSchema, createCategorySchema, updateCategorySchema } from '../../modules/categories/categories.schema';
 
 // Register schemas
 registry.register('RegisterInput', registerSchema);
@@ -29,6 +30,10 @@ registry.register('Room', roomSchema);
 registry.register('CreateReportInput', createReportSchema);
 registry.register('UpdateReportInput', updateReportSchema);
 registry.register('Report', reportSchema);
+
+registry.register('CreateCategoryInput', createCategorySchema);
+registry.register('UpdateCategoryInput', updateCategorySchema);
+registry.register('Category', categoriesSchema);
 
 // --- Reusable Response Schemas ---
 
@@ -527,6 +532,124 @@ registry.registerPath({
   },
 });
 
+// --- Categories Routes ---
+registry.registerPath({
+  method: 'get',
+  path: '/categories',
+  tags: ['categories'],
+  summary: 'Get all categories',
+  responses: {
+    200: {
+      description: 'Categories fetched successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: z.array(categoriesSchema) }) },
+      },
+    },
+    ...commonErrors,
+  },
+});
+
+registry.registerPath({
+  method: 'get',
+  path: '/categories/{id}',
+  tags: ['categories'],
+  summary: 'Get category by id',
+  request: {
+    params: z.object({ id: z.string() })
+  },
+  responses: {
+    200: {
+      description: 'Category fetched successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: categoriesSchema }) },
+      },
+    },
+    404: {
+      description: 'Category not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/categories',
+  tags: ['categories'],
+  summary: 'Create category',
+  request: {
+    body: {
+      content: { 'application/json': { schema: createCategorySchema } },
+    },
+  },
+  responses: {
+    201: {
+      description: 'Category created successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: categoriesSchema }) },
+      },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
+
+registry.registerPath({
+  method: 'put',
+  path: '/categories/{id}',
+  tags: ['categories'],
+  summary: 'Update category',
+  request: {
+    params: z.object({ id: z.string() }),
+    body: {
+      content: { 'application/json': { schema: updateCategorySchema } },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Category updated successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: categoriesSchema }) },
+      },
+    },
+    404: {
+      description: 'Category not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
+
+registry.registerPath({
+  method: 'delete',
+  path: '/categories/{id}',
+  tags: ['categories'],
+  summary: 'Delete category',
+  request: {
+    params: z.object({ id: z.string() })
+  },
+  responses: {
+    200: {
+      description: 'Category deleted successfully',
+      content: {
+        'application/json': { schema: SuccessResponse },
+      },
+    },
+    404: {
+      description: 'Category not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
+
 // --- Reports Routes ---
 registry.registerPath({
   method: 'get',
@@ -645,6 +768,77 @@ registry.registerPath({
   },
 });
 
+// --- Dashboard Route ---
+const DashboardSummarySchema = z.object({
+  totalReports: z.number(),
+  pendingReports: z.number(),
+  resolvedReports: z.number(),
+});
+
+const CategoryTrendItemSchema = z.object({
+  categoryName: z.string(),
+  count: z.number(),
+});
+
+const TopRoomItemSchema = z.object({
+  roomName: z.string(),
+  floor: z.number(),
+  buildingName: z.string(),
+  count: z.number(),
+});
+
+const DashboardResponseSchema = z.object({
+  summary: DashboardSummarySchema,
+  categoryTrend: z.array(CategoryTrendItemSchema),
+  topRooms: z.array(TopRoomItemSchema),
+});
+
+registry.register('DashboardResponse', DashboardResponseSchema);
+
+registry.registerPath({
+  method: 'get',
+  path: '/reports/dashboard',
+  tags: ['reports'],
+  summary: 'Get dashboard analytics (summary, category trend, top rooms)',
+  responses: {
+    200: {
+      description: 'Dashboard stats fetched successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: DashboardResponseSchema }) },
+      },
+    },
+    ...commonErrors,
+  },
+});
+
+// --- CSV Export Route ---
+registry.registerPath({
+  method: 'get',
+  path: '/reports/export/csv',
+  tags: ['reports'],
+  summary: 'Export reports to CSV (optional month/year filter)',
+  request: {
+    query: z.object({
+      month: z.coerce.number().min(1).max(12).optional().openapi({ description: 'Filter by month (1-12)' }),
+      year: z.coerce.number().min(2000).optional().openapi({ description: 'Filter by year (e.g. 2026)' }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'CSV file download',
+      content: {
+        'text/csv': {
+          schema: z.string().openapi({ description: 'CSV file content' }),
+        },
+      },
+    },
+    400: {
+      description: 'Invalid query parameters',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
 
 const generator = new OpenApiGeneratorV3(registry.definitions);
 

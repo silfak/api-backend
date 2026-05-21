@@ -3,6 +3,7 @@ import { authorizeRole, verifyToken } from "../../shared/middlewares/auth.middle
 import { ROLES } from "../../shared/utils/roles";
 import { validateBody } from "../../shared/middlewares/validation.middleware";
 import { createReportSchema, updateReportSchema } from "./reports.schema";
+import { uploadMiddleware } from "../../shared/middlewares/upload.middleware";
 import {
     getReportsHandler,
     getReportByIdHandler,
@@ -22,8 +23,8 @@ reportsRouter.get('/dashboard', authorizeRole([ROLES.ADMIN]), getDashboardHandle
 reportsRouter.get('/export/csv', authorizeRole([ROLES.ADMIN]), exportReportsCsvHandler);
 reportsRouter.get('/:id', getReportByIdHandler);
 
-reportsRouter.post('/', validateBody(createReportSchema), createReportHandler);
-reportsRouter.patch('/:id', validateBody(updateReportSchema), authorizeRole([ROLES.ADMIN, ROLES.OB]), updateReportHandler);
+reportsRouter.post('/', uploadMiddleware.single('image'), validateBody(createReportSchema), createReportHandler);
+reportsRouter.patch('/:id', authorizeRole([ROLES.ADMIN, ROLES.OB]), uploadMiddleware.single('image'), validateBody(updateReportSchema), updateReportHandler);
 reportsRouter.delete('/:id', authorizeRole([ROLES.ADMIN]), deleteReportHandler);
 
 export default reportsRouter;

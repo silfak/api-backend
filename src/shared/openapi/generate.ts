@@ -645,6 +645,77 @@ registry.registerPath({
   },
 });
 
+// --- Dashboard Route ---
+const DashboardSummarySchema = z.object({
+  totalReports: z.number(),
+  pendingReports: z.number(),
+  resolvedReports: z.number(),
+});
+
+const CategoryTrendItemSchema = z.object({
+  categoryName: z.string(),
+  count: z.number(),
+});
+
+const TopRoomItemSchema = z.object({
+  roomName: z.string(),
+  floor: z.number(),
+  buildingName: z.string(),
+  count: z.number(),
+});
+
+const DashboardResponseSchema = z.object({
+  summary: DashboardSummarySchema,
+  categoryTrend: z.array(CategoryTrendItemSchema),
+  topRooms: z.array(TopRoomItemSchema),
+});
+
+registry.register('DashboardResponse', DashboardResponseSchema);
+
+registry.registerPath({
+  method: 'get',
+  path: '/reports/dashboard',
+  tags: ['reports'],
+  summary: 'Get dashboard analytics (summary, category trend, top rooms)',
+  responses: {
+    200: {
+      description: 'Dashboard stats fetched successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: DashboardResponseSchema }) },
+      },
+    },
+    ...commonErrors,
+  },
+});
+
+// --- CSV Export Route ---
+registry.registerPath({
+  method: 'get',
+  path: '/reports/export/csv',
+  tags: ['reports'],
+  summary: 'Export reports to CSV (optional month/year filter)',
+  request: {
+    query: z.object({
+      month: z.coerce.number().min(1).max(12).optional().openapi({ description: 'Filter by month (1-12)' }),
+      year: z.coerce.number().min(2000).optional().openapi({ description: 'Filter by year (e.g. 2026)' }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'CSV file download',
+      content: {
+        'text/csv': {
+          schema: z.string().openapi({ description: 'CSV file content' }),
+        },
+      },
+    },
+    400: {
+      description: 'Invalid query parameters',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
 
 const generator = new OpenApiGeneratorV3(registry.definitions);
 

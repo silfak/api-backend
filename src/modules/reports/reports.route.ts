@@ -8,7 +8,9 @@ import {
     getReportByIdHandler,
     createReportHandler,
     updateReportHandler,
-    deleteReportHandler
+    deleteReportHandler,
+    exportReportsCsvHandler,
+    getDashboardHandler,
 } from "./reports.controller";
 
 const reportsRouter = Router();
@@ -16,6 +18,8 @@ const reportsRouter = Router();
 reportsRouter.use(verifyToken);
 
 reportsRouter.get('/', getReportsHandler);
+reportsRouter.get('/dashboard', authorizeRole([ROLES.ADMIN]), getDashboardHandler);
+reportsRouter.get('/export/csv', authorizeRole([ROLES.ADMIN]), exportReportsCsvHandler);
 reportsRouter.get('/:id', getReportByIdHandler);
 
 reportsRouter.post('/', validateBody(createReportSchema), createReportHandler);

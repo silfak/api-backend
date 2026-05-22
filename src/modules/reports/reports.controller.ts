@@ -11,7 +11,6 @@ import {
 import { ReportByIdInput, CreateReportInput, UpdateReportInput } from './reports.schema';
 import { sendSuccess } from '../../shared/utils/response';
 import { storageService } from '../../shared/services/storage.service';
-import crypto from 'crypto';
 import path from 'path';
 
 export const getReportsHandler = async (_req: Request, res: Response, next: NextFunction) => {

@@ -12,8 +12,8 @@ buildingsRouter.use(verifyToken)
 buildingsRouter.get('/', getAllBuildings)
 buildingsRouter.get('/:id', getBuildingById)
 
-buildingsRouter.post('/', validateBody(createBuildingSchema), authorizeRole([ROLES.ADMIN]), createBuilding)
-buildingsRouter.put('/:id', validateBody(updateBuildingSchema), authorizeRole([ROLES.ADMIN]), updateBuilding)
-buildingsRouter.delete('/:id', authorizeRole([ROLES.ADMIN]), deleteBuilding)
+buildingsRouter.post('/', validateBody(createBuildingSchema), authorizeRole([ROLES.ADMIN, ROLES.SUPERADMIN]), createBuilding)
+buildingsRouter.put('/:id', validateBody(updateBuildingSchema), authorizeRole([ROLES.ADMIN, ROLES.SUPERADMIN]), updateBuilding)
+buildingsRouter.delete('/:id', authorizeRole([ROLES.ADMIN, ROLES.SUPERADMIN]), deleteBuilding)
 
 export default buildingsRouter

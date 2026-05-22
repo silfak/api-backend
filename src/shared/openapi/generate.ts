@@ -221,6 +221,39 @@ registry.registerPath({
 });
 
 registry.registerPath({
+  method: 'post',
+  path: '/users/admin',
+  tags: ['users'],
+  summary: 'Create Admin User',
+  request: {
+    body: {
+      content: { 'application/json': { schema: usersSchema } },
+    },
+  },
+  responses: {
+    201: {
+      description: 'Admin user created successfully',
+      content: {
+        'application/json': { schema: SuccessResponse.extend({ data: userByIdSchema }) },
+      },
+    },
+    404: {
+      description: 'Role Admin not found',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    409: {
+      description: 'Conflict — user already exists',
+      content: { 'application/json': { schema: ErrorResponse } },
+    },
+    422: {
+      description: 'Validation failed',
+      content: { 'application/json': { schema: ValidationErrorResponse } },
+    },
+    ...commonErrors,
+  },
+});
+
+registry.registerPath({
   method: 'get',
   path: '/users/{id}',
   tags: ['users'],

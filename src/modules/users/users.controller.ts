@@ -11,6 +11,7 @@ import {
   getUserByRoleService,
   updateUserService,
 } from './users.service';
+import { ROLES } from '../../shared/utils/roles';
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -39,10 +40,25 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 
 export const createOB = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const role = await getRoleByName('OB');
+    const role = await getRoleByName(ROLES.OB);
 
     if (!role || !role.id) {
       throw new NotFoundError('Role "OB" tidak ditemukan di database.');
+    }
+
+    const result = await createUserService({ ...req.body, roleId: role.id });
+    return sendSuccess(res, result, 'User created successfully', 201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const role = await getRoleByName(ROLES.ADMIN);
+
+    if (!role || !role.id) {
+      throw new NotFoundError('Role "Admin" tidak ditemukan di database.');
     }
 
     const result = await createUserService({ ...req.body, roleId: role.id });

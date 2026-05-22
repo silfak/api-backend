@@ -55,7 +55,7 @@ export const getReportById = async (id: string) => {
 
 }
 
-export const updateReport = async (id: string, data: Partial<UpdateReportInput>) => {
+export const updateReport = async (id: string, data: Partial<UpdateReportInput> & { imageUrl?: string }) => {
     const existingReport = await db.query.reports.findFirst({
         where: {
             id: id
@@ -66,6 +66,19 @@ export const updateReport = async (id: string, data: Partial<UpdateReportInput>)
         throw new NotFoundError('Report not found')
     }
 
+    const roomExists = await db.query.rooms.findFirst({
+        where: {
+            id: data.roomId
+        }
+    });
+    if (!roomExists) throw new NotFoundError('Room not found');
+
+    const categoryExists = await db.query.categories.findFirst({
+        where: {
+            id: data.categoryId
+        }
+    });
+    if (!categoryExists) throw new NotFoundError('Category not found');
     const [report] = await db.update(reports).set({
         ...existingReport,
         ...data,
@@ -74,8 +87,22 @@ export const updateReport = async (id: string, data: Partial<UpdateReportInput>)
     return report
 }
 
-export const createReport = async (data: CreateReportInput, reporterId: string) => {
-    const report = await db.insert(reports).values({
+export const createReport = async (data: CreateReportInput & { imageUrl?: string }, reporterId: string) => {
+    const roomExists = await db.query.rooms.findFirst({
+        where: {
+            id: data.roomId
+        }
+    });
+    if (!roomExists) throw new NotFoundError('Room not found');
+
+    const categoryExists = await db.query.categories.findFirst({
+        where: {
+            id: data.categoryId
+        }
+    });
+    if (!categoryExists) throw new NotFoundError('Category not found');
+
+    const [report] = await db.insert(reports).values({
         ...data,
         reporterId,
     }).returning()

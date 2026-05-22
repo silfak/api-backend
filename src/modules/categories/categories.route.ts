@@ -12,6 +12,6 @@ categoriesRouter.use(verifyToken);
 categoriesRouter.get('/', getAllCategoriesController);
 categoriesRouter.get('/:id', getCategoryByIdController);
 
-categoriesRouter.post('/', validateBody(createCategorySchema), authorizeRole([ROLES.ADMIN]), createCategoryController);
-categoriesRouter.put('/:id', validateBody(updateCategorySchema), authorizeRole([ROLES.ADMIN]), updateCategoryController);
-categoriesRouter.delete('/:id', authorizeRole([ROLES.ADMIN]), deleteCategoryController);    
+categoriesRouter.post('/', validateBody(createCategorySchema), authorizeRole([ROLES.ADMIN, ROLES.SUPERADMIN]), createCategoryController);
+categoriesRouter.put('/:id', validateBody(updateCategorySchema), authorizeRole([ROLES.ADMIN, ROLES.SUPERADMIN]), updateCategoryController);
+categoriesRouter.delete('/:id', authorizeRole([ROLES.ADMIN, ROLES.SUPERADMIN]), deleteCategoryController);    

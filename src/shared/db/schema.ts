@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, date, integer, boolean, timestamp, foreignKey, primaryKey, unique } from "drizzle-orm/pg-core"
+import { pgTable, uuid, varchar, text, date, integer, boolean, timestamp, foreignKey, primaryKey, unique } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
@@ -20,7 +20,7 @@ export const reports = pgTable("reports", {
 	reporterId: uuid("reporter_id").notNull().references(() => users.id),
 	roomId: uuid("room_id").notNull().references(() => rooms.id),
 	description: varchar({ length: 255 }),
-	imageUrl: varchar("image_url", { length: 255 }),
+	imageUrl: text("image_url"),
 	status: varchar({ length: 50 }),
 	isUrgent: boolean("is_urgent").default(false).notNull(),
 	categoryId: uuid("category_id").notNull().references(() => categories.id),

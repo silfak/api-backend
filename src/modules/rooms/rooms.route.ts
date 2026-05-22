@@ -12,8 +12,8 @@ roomsRouter.use(verifyToken)
 roomsRouter.get('/', getAllRooms)
 roomsRouter.get('/:id', getRoomById)
 
-roomsRouter.post('/', validateBody(createRoomSchema), authorizeRole([ROLES.ADMIN]), createRoom)
-roomsRouter.put('/:id', validateBody(updateRoomSchema), authorizeRole([ROLES.ADMIN]), updateRoom)
-roomsRouter.delete('/:id', authorizeRole([ROLES.ADMIN]), deleteRoom)
+roomsRouter.post('/', validateBody(createRoomSchema), authorizeRole([ROLES.ADMIN, ROLES.SUPERADMIN]), createRoom)
+roomsRouter.put('/:id', validateBody(updateRoomSchema), authorizeRole([ROLES.ADMIN, ROLES.SUPERADMIN]), updateRoom)
+roomsRouter.delete('/:id', authorizeRole([ROLES.ADMIN, ROLES.SUPERADMIN]), deleteRoom)
 
 export default roomsRouter

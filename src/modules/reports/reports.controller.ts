@@ -39,7 +39,8 @@ export const createReportHandler = async (req: Request, res: Response, next: Nex
 
     if (req.file) {
       const ext = path.extname(req.file.originalname);
-      const uniqueFileName = `reports/${req.file.filename}-${Date.now()}${ext}`;
+      const baseName = path.basename(req.file.originalname, ext);
+      const uniqueFileName = `reports/${baseName}-${Date.now()}${ext}`;
       await storageService.uploadFile(req.file.buffer, uniqueFileName, req.file.mimetype);
       data.imageUrl = await storageService.getPresignedUrl(uniqueFileName);
     }
@@ -59,7 +60,8 @@ export const updateReportHandler = async (req: Request, res: Response, next: Nex
     
     if (req.file) {
       const ext = path.extname(req.file.originalname);
-      const uniqueFileName = `reports/${crypto.randomUUID()}${ext}`;
+      const baseName = path.basename(req.file.originalname, ext);
+      const uniqueFileName = `reports/${baseName}-${Date.now()}${ext}`;
       await storageService.uploadFile(req.file.buffer, uniqueFileName, req.file.mimetype);
       data.imageUrl = await storageService.getPresignedUrl(uniqueFileName);
     }

@@ -66,19 +66,23 @@ export const updateReport = async (id: string, data: Partial<UpdateReportInput> 
         throw new NotFoundError('Report not found')
     }
 
-    const roomExists = await db.query.rooms.findFirst({
-        where: {
-            id: data.roomId
-        }
-    });
-    if (!roomExists) throw new NotFoundError('Room not found');
+    if (data.roomId) {
+        const roomExists = await db.query.rooms.findFirst({
+            where: {
+                id: data.roomId
+            }
+        });
+        if (!roomExists) throw new NotFoundError('Room not found');
+    }
 
-    const categoryExists = await db.query.categories.findFirst({
-        where: {
-            id: data.categoryId
-        }
-    });
-    if (!categoryExists) throw new NotFoundError('Category not found');
+    if (data.categoryId) {
+        const categoryExists = await db.query.categories.findFirst({
+            where: {
+                id: data.categoryId
+            }
+        });
+        if (!categoryExists) throw new NotFoundError('Category not found');
+    }
     const [report] = await db.update(reports).set({
         ...existingReport,
         ...data,

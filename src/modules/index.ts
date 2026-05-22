@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import authRouter from './auth/auth.router';
-import usersRouter from './users/users.router';
+import usersRouter from './users/users.route';
 import buildingsRouter from './buildings/buildings.route';
 import roomsRouter from './rooms/rooms.route';
 import { categoriesRouter } from './categories/categories.route';

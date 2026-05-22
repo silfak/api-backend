@@ -11,7 +11,6 @@ import {
 import { ReportByIdInput, CreateReportInput, UpdateReportInput } from './reports.schema';
 import { sendSuccess } from '../../shared/utils/response';
 import { storageService } from '../../shared/services/storage.service';
-import crypto from 'crypto';
 import path from 'path';
 
 export const getReportsHandler = async (_req: Request, res: Response, next: NextFunction) => {
@@ -35,11 +34,12 @@ export const getReportByIdHandler = async (req: Request, res: Response, next: Ne
 
 export const createReportHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const data = req.body as CreateReportInput;
+    const data = req.body as CreateReportInput & { imageUrl?: string };
 
     if (req.file) {
       const ext = path.extname(req.file.originalname);
-      const uniqueFileName = `reports/${crypto.randomUUID()}${ext}`;
+      const baseName = path.basename(req.file.originalname, ext);
+      const uniqueFileName = `reports/${baseName}-${Date.now()}${ext}`;
       await storageService.uploadFile(req.file.buffer, uniqueFileName, req.file.mimetype);
       data.imageUrl = await storageService.getPresignedUrl(uniqueFileName);
     }
@@ -55,11 +55,12 @@ export const createReportHandler = async (req: Request, res: Response, next: Nex
 export const updateReportHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params as unknown as ReportByIdInput;
-    const data = req.body as UpdateReportInput;
+    const data = req.body as UpdateReportInput & { imageUrl?: string };
     
     if (req.file) {
       const ext = path.extname(req.file.originalname);
-      const uniqueFileName = `reports/${crypto.randomUUID()}${ext}`;
+      const baseName = path.basename(req.file.originalname, ext);
+      const uniqueFileName = `reports/${baseName}-${Date.now()}${ext}`;
       await storageService.uploadFile(req.file.buffer, uniqueFileName, req.file.mimetype);
       data.imageUrl = await storageService.getPresignedUrl(uniqueFileName);
     }

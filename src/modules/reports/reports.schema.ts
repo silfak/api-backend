@@ -11,7 +11,7 @@ export const reportSchema = createSelectSchema(reports);
 export const createReportSchema = z.object({
     roomId: z.string().uuid(),
     description: z.string().min(1),
-    image: z.file().optional().openapi({ type: 'string', format: 'binary' }),
+    image: z.any().optional().openapi({ type: 'string', format: 'binary' }),
     status: z.enum(STATUS).default(STATUS.REPORTED).optional(),
     isUrgent: z.preprocess((val) => {
         if (typeof val === 'string') return val === 'true';

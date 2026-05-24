@@ -13,6 +13,7 @@ export interface JwtPayload {
   id: string;
   name: string;
   email: string;
+  isActive: boolean;
   role: {
     id: string;
     name: string;
@@ -31,6 +32,13 @@ export const verifyToken = (req: Request, _res: Response, next: NextFunction) =>
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     req.user = decoded;
+
+    console.log(req.user);
+
+    if (decoded.isActive === false) {
+      return next(new UnauthorizedError('Akun anda tidak aktif'));
+    }
+
     next();
   } catch (e) {
     if (e instanceof jwt.TokenExpiredError) {
@@ -46,7 +54,7 @@ export const verifyToken = (req: Request, _res: Response, next: NextFunction) =>
 export const authorizeRole = (allowedRoles: string[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user || !allowedRoles.includes(req.user.role.name)) {
-      return next(new ForbiddenError('Forbidden'));
+      return next(new ForbiddenError('Anda tidak memiliki akses untuk melakukan operasi ini'));
     }
     next();
   };

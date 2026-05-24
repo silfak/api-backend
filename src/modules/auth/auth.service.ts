@@ -79,11 +79,16 @@ export const loginService = async (data: LoginInput) => {
     throw new UnauthorizedError('Email atau password salah');
   }
 
+  if (user.isActive === false) {
+    throw new UnauthorizedError('Akun anda tidak aktif');
+  }
+
   const payload = {
     id: user.id,
     name: user.name,
     email: user.email,
     role: user.role,
+    isActive: user.isActive
   };
 
   const JWT_SECRET = process.env.JWT_SECRET || '';

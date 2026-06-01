@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import authRouter from './auth/auth.router';
+import authRouter from './auth/auth.route';
 import usersRouter from './users/users.route';
 import buildingsRouter from './buildings/buildings.route';
 import roomsRouter from './rooms/rooms.route';
